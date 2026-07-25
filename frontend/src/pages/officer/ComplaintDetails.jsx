@@ -295,7 +295,7 @@ export default function ComplaintDetails() {
                     image &&
 
                     <img
-                        src={image}
+
                         alt="preview"
                         className="preview-image"
                     />

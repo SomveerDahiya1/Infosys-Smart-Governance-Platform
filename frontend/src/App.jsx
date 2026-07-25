@@ -67,10 +67,13 @@ function App() {
                         path="dashboard"
                         element={<OfficerDashboard />}
                     />
-
                     <Route
                         path="assigned"
                         element={<AssignedComplaints />}
+                    />
+                    <Route
+                        path="complaints"
+                        element={<ComplaintDetails/>}
                     />
 
                     <Route

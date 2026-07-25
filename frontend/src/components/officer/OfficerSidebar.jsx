@@ -1,14 +1,8 @@
 import {
-    FaHome,
-    FaClipboardList,
-    FaFileAlt,
-    FaEdit,
-    FaBell,
-    FaUser,
-    FaSignOutAlt
+    FaHome, FaClipboardList, FaFileAlt, FaEdit, FaBell, FaUser, FaSignOutAlt
 } from "react-icons/fa";
 
-import { Link, useLocation } from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 
 import "../../styles/common/Sidebar.css";
 
@@ -34,7 +28,7 @@ export default function OfficerSidebar() {
 
                     <Link to="/officer/dashboard">
 
-                        <FaHome />
+                        <FaHome/>
 
                         <span>Dashboard</span>
 
@@ -46,33 +40,18 @@ export default function OfficerSidebar() {
 
                     <Link to="/officer/assigned">
 
-                        <FaClipboardList />
+                        <FaClipboardList/>
 
                         <span>Assigned Complaints</span>
 
                     </Link>
-
                 </li>
-
-                <li className={location.pathname === "/officer/details" ? "active" : ""}>
-
-                    <Link to="/officer/details">
-
-                        <FaFileAlt />
-
-                        <span>Complaint Details</span>
-
-                    </Link>
-
-                </li>
-
-
 
                 <li className={location.pathname === "/officer/notifications" ? "active" : ""}>
 
                     <Link to="/officer/notifications">
 
-                        <FaBell />
+                        <FaBell/>
 
                         <span>Notifications</span>
 
@@ -84,7 +63,7 @@ export default function OfficerSidebar() {
 
                     <Link to="/officer/profile">
 
-                        <FaUser />
+                        <FaUser/>
 
                         <span>Profile</span>
 
@@ -96,7 +75,7 @@ export default function OfficerSidebar() {
 
             <div className="logout">
 
-                <FaSignOutAlt />
+                <FaSignOutAlt/>
 
                 <span>Logout</span>
 
