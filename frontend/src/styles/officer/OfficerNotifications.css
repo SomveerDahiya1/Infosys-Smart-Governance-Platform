@@ -3,305 +3,191 @@
 ================================ */
 
 .officer-notification-page{
-
     max-width:1100px;
     margin:auto;
-
 }
 
 /* Header */
 
 .notification-header{
-
     display:flex;
     justify-content:space-between;
     align-items:center;
     margin-bottom:30px;
-
 }
 
 .notification-header h1{
-
     font-size:34px;
     color:#0f172a;
-
 }
 
 .notification-header p{
-
     color:#64748b;
     margin-top:6px;
-
 }
 
 /* Search */
 
 .notification-search{
-
     display:flex;
     align-items:center;
     gap:12px;
-
     background:white;
-
     padding:14px 20px;
-
     border-radius:14px;
-
     box-shadow:0 8px 20px rgba(0,0,0,.08);
-
     margin-bottom:25px;
-
 }
 
 .notification-search svg{
-
     color:#64748b;
-
 }
 
 .notification-search input{
-
     flex:1;
-
     border:none;
-
     outline:none;
-
     font-size:15px;
-
     background:transparent;
-
 }
 
 /* Card */
 
 .notification-card{
-
     display:flex;
-
     align-items:center;
-
     gap:20px;
-
     background:white;
-
     border-radius:16px;
-
     padding:22px;
-
     margin-bottom:18px;
-
     box-shadow:0 8px 20px rgba(0,0,0,.08);
-
     transition:.3s;
-
 }
 
 .notification-card:hover{
-
     transform:translateY(-4px);
-
 }
 
 .unread{
-
     border-left:6px solid #2563eb;
-
 }
 
 /* Icon */
 
 .notification-icon{
-
     width:60px;
-
     height:60px;
-
     border-radius:50%;
-
     background:#eff6ff;
-
     display:flex;
-
     justify-content:center;
-
     align-items:center;
-
     font-size:24px;
-
     color:#2563eb;
-
     flex-shrink:0;
-
 }
 
 /* Content */
 
 .notification-content{
-
     flex:1;
-
 }
 
 .notification-content h3{
-
     margin-bottom:8px;
-
     color:#0f172a;
-
 }
 
 .notification-content p{
-
     color:#475569;
-
     margin-bottom:8px;
-
     line-height:1.6;
-
 }
 
 .notification-content small{
-
     color:#94a3b8;
-
 }
 
 /* Buttons */
 
 .read-btn{
-
     border:none;
-
     background:#2563eb;
-
     color:white;
-
     padding:12px 18px;
-
     border-radius:10px;
-
     cursor:pointer;
-
     font-weight:600;
-
     display:flex;
-
     align-items:center;
-
     gap:8px;
-
     transition:.3s;
-
 }
 
 .read-btn:hover{
-
     background:#1d4ed8;
-
 }
 
 .clear-btn{
-
     border:none;
-
     background:#ef4444;
-
     color:white;
-
     padding:12px 20px;
-
     border-radius:10px;
-
     cursor:pointer;
-
     display:flex;
-
     align-items:center;
-
     gap:8px;
-
     font-weight:600;
-
     transition:.3s;
-
 }
 
 .clear-btn:hover{
-
     background:#dc2626;
-
 }
 
 /* Empty */
 
 .empty-notification{
-
     background:white;
-
     padding:70px;
-
     text-align:center;
-
     border-radius:18px;
-
     box-shadow:0 10px 25px rgba(0,0,0,.08);
-
 }
 
 .empty-notification svg{
-
     font-size:70px;
-
     color:#2563eb;
-
     margin-bottom:20px;
-
 }
 
 .empty-notification h2{
-
     margin-bottom:12px;
-
     color:#0f172a;
-
 }
 
 .empty-notification p{
-
     color:#64748b;
-
 }
 
 /* Mobile */
 
 @media(max-width:768px){
-
     .notification-header{
-
         flex-direction:column;
-
         align-items:flex-start;
-
         gap:15px;
-
     }
 
     .notification-card{
-
         flex-direction:column;
-
         align-items:flex-start;
-
     }
 
     .read-btn{
-
         width:100%;
-
         justify-content:center;
-
     }
-
 }

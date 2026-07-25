@@ -1,117 +1,68 @@
 .topbar{
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
     margin-bottom:35px;
-
 }
 
 .topbar h1{
-
     font-size:32px;
-
 }
 
 .topbar p{
-
     color:#64748b;
-
     margin-top:5px;
-
 }
 
 .topbar-right{
-
     display:flex;
-
     align-items:center;
-
     gap:18px;
-
 }
 
 .search-box{
-
     display:flex;
-
     align-items:center;
-
     gap:12px;
-
     background:white;
-
     padding:12px 18px;
-
     border-radius:12px;
-
     box-shadow:0 5px 15px rgba(0,0,0,.08);
-
 }
 
 .search-box input{
-
     border:none;
-
     outline:none;
-
     width:220px;
-
 }
 
 .icon-btn{
-
     width:45px;
-
     height:45px;
-
     border:none;
-
     border-radius:50%;
-
     background:white;
-
     cursor:pointer;
-
     box-shadow:0 5px 15px rgba(0,0,0,.08);
-
     transition:.3s;
-
 }
 
 .icon-btn:hover{
-
     background:#2563eb;
-
     color:white;
-
 }
 
 .profile{
-
     display:flex;
-
     align-items:center;
-
     gap:10px;
-
     background:white;
-
     padding:10px 18px;
-
     border-radius:12px;
-
     box-shadow:0 5px 15px rgba(0,0,0,.08);
-
 }
 
 .profile svg{
-
     font-size:28px;
-
     color:#2563eb;
-
 }

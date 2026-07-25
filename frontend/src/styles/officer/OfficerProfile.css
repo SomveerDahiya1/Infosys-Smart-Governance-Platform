@@ -1,187 +1,114 @@
 .profile-page{
-
     max-width:1100px;
     margin:auto;
-
 }
 
 .profile-header{
-
     display:flex;
     align-items:center;
     gap:25px;
-
     background:white;
-
     padding:30px;
-
     border-radius:18px;
-
     margin-bottom:25px;
-
     box-shadow:0 10px 25px rgba(0,0,0,.08);
-
 }
 
 .profile-avatar{
-
     font-size:90px;
-
     color:#2563eb;
-
 }
 
 .profile-header h1{
-
     color:#0f172a;
-
 }
 
 .profile-header p{
-
     color:#64748b;
     margin-top:8px;
-
 }
 
 .profile-card{
-
     background:white;
-
     padding:30px;
-
     border-radius:18px;
-
     margin-bottom:25px;
-
     box-shadow:0 10px 25px rgba(0,0,0,.08);
-
 }
 
 .profile-card h2{
-
     margin-bottom:20px;
-
 }
 
 .profile-grid{
-
     display:grid;
-
     grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-
     gap:20px;
-
 }
 
 .profile-grid div{
-
     display:flex;
-
     align-items:center;
-
     gap:12px;
-
 }
 
 .profile-grid svg{
-
     color:#2563eb;
-
 }
 
 .stats-grid{
-
     display:grid;
-
     grid-template-columns:repeat(3,1fr);
-
     gap:20px;
-
 }
 
 .stat-box{
-
     background:#f8fafc;
-
     padding:25px;
-
     border-radius:15px;
-
     text-align:center;
-
 }
 
 .stat-box svg{
-
     font-size:30px;
-
     color:#2563eb;
-
     margin-bottom:15px;
-
 }
 
 .stat-box h3{
-
     font-size:30px;
-
     margin-bottom:10px;
-
 }
 
 .profile-actions{
-
     display:flex;
-
     gap:20px;
-
     flex-wrap:wrap;
-
 }
 
 .profile-actions button{
-
     border:none;
-
     background:#2563eb;
-
     color:white;
-
     padding:14px 22px;
-
     border-radius:10px;
-
     cursor:pointer;
-
     display:flex;
-
     align-items:center;
-
     gap:10px;
-
 }
 
 .logout-btn{
-
     background:#ef4444 !important;
-
 }
 
 @media(max-width:768px){
-
     .profile-header{
-
         flex-direction:column;
-
         text-align:center;
-
     }
 
     .stats-grid{
-
         grid-template-columns:1fr;
-
     }
-
 }

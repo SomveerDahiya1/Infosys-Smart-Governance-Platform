@@ -12,9 +12,7 @@ import {
 import "../../styles/officer/OfficerNotifications.css";
 
 export default function OfficerNotifications() {
-
     const [notifications, setNotifications] = useState([
-
         {
             id:1,
             title:"New Complaint Assigned",
@@ -22,7 +20,6 @@ export default function OfficerNotifications() {
             time:"5 mins ago",
             read:false
         },
-
         {
             id:2,
             title:"Citizen Added Comment",
@@ -30,7 +27,6 @@ export default function OfficerNotifications() {
             time:"30 mins ago",
             read:false
         },
-
         {
             id:3,
             title:"Deadline Reminder",
@@ -38,7 +34,6 @@ export default function OfficerNotifications() {
             time:"2 hours ago",
             read:true
         },
-
         {
             id:4,
             title:"System Announcement",
@@ -46,189 +41,120 @@ export default function OfficerNotifications() {
             time:"Today",
             read:true
         }
-
     ]);
 
-    const markAsRead = (id)=>{
-
+    const markAsRead = (id) => {
         setNotifications(
-
-            notifications.map((item)=>
-
-                item.id===id
-                    ? {...item,read:true}
+            notifications.map((item) =>
+                item.id === id
+                    ? {...item, read:true}
                     : item
-
             )
-
         );
-
     };
 
-    const clearAll=()=>{
-
+    const clearAll = () => {
         setNotifications([]);
-
     };
 
-    return(
-
+    return (
         <div className="officer-notification-page">
-
             <div className="notification-header">
-
                 <div>
-
                     <h1>Notifications</h1>
 
                     <p>
-
                         Stay updated with assigned complaints.
-
                     </p>
-
                 </div>
 
                 <button
                     className="clear-btn"
                     onClick={clearAll}
                 >
-
-                    <FaTrash/>
+                    <FaTrash />
 
                     Clear All
-
                 </button>
-
             </div>
 
             <div className="notification-search">
-
-                <FaSearch/>
+                <FaSearch />
 
                 <input
                     type="text"
                     placeholder="Search notifications..."
                 />
-
             </div>
 
             {
-
-                notifications.length===0 ?
-
+                notifications.length === 0
+                    ?
                     (
-
                         <div className="empty-notification">
+                            <FaBell />
 
-                            <FaBell/>
-
-                            <h2>No Notifications</h2>
+                            <h2>
+                                No Notifications
+                            </h2>
 
                             <p>
-
                                 You're all caught up.
-
                             </p>
-
                         </div>
-
                     )
-
                     :
-
-                    notifications.map((item)=>(
-
+                    notifications.map((item) => (
                         <div
-
                             key={item.id}
-
                             className={
                                 item.read
-                                    ?
-                                    "notification-card"
-                                    :
-                                    "notification-card unread"
+                                    ? "notification-card"
+                                    : "notification-card unread"
                             }
-
                         >
-
                             <div className="notification-icon">
-
                                 {
-
                                     item.title.includes("Assigned")
-
                                         ?
-
-                                        <FaClipboardList/>
-
+                                        <FaClipboardList />
                                         :
-
                                         item.title.includes("Deadline")
-
                                             ?
-
-                                            <FaExclamationTriangle/>
-
+                                            <FaExclamationTriangle />
                                             :
-
-                                            <FaBell/>
-
+                                            <FaBell />
                                 }
-
                             </div>
 
                             <div className="notification-content">
-
                                 <h3>
-
                                     {item.title}
-
                                 </h3>
 
                                 <p>
-
                                     {item.message}
-
                                 </p>
 
                                 <small>
-
                                     {item.time}
-
                                 </small>
-
                             </div>
 
                             {
-
                                 !item.read &&
-
                                 <button
-
                                     className="read-btn"
-
-                                    onClick={()=>markAsRead(item.id)}
-
+                                    onClick={() => markAsRead(item.id)}
                                 >
-
-                                    <FaCheckCircle/>
+                                    <FaCheckCircle />
 
                                     Mark Read
-
                                 </button>
-
                             }
-
                         </div>
-
                     ))
-
             }
-
         </div>
-
     );
-
 }

@@ -1,261 +1,155 @@
 .profile-page{
-
     display:flex;
-
     flex-direction:column;
-
     gap:30px;
-
 }
 
 /* Header */
 
 .profile-header h1{
-
     font-size:34px;
-
     color:#0f172a;
-
     margin-bottom:8px;
-
 }
 
 .profile-header p{
-
     color:#64748b;
-
 }
 
 /* Layout */
 
 .profile-container{
-
     display:grid;
-
     grid-template-columns:320px 1fr;
-
     gap:30px;
-
     align-items:start;
-
 }
 
 /* Left Card */
 
 .profile-card{
-
     background:white;
-
     border-radius:20px;
-
     padding:35px;
-
     text-align:center;
-
     box-shadow:0 10px 25px rgba(0,0,0,.08);
-
 }
 
 .profile-image{
-
     position:relative;
-
     width:180px;
-
     height:180px;
-
     margin:0 auto 25px;
-
 }
 
 .profile-image img{
-
     width:100%;
-
     height:100%;
-
     object-fit:cover;
-
     border-radius:50%;
-
     border:5px solid #2563eb;
-
 }
 
 .profile-image button{
-
     position:absolute;
-
     right:8px;
-
     bottom:8px;
-
     width:48px;
-
     height:48px;
-
     border:none;
-
     border-radius:50%;
-
     background:#2563eb;
-
     color:white;
-
     display:flex;
-
     justify-content:center;
-
     align-items:center;
-
     cursor:pointer;
-
     transition:.3s;
-
 }
 
 .profile-image button:hover{
-
     background:#1d4ed8;
-
     transform:scale(1.08);
-
 }
 
 .profile-card h2{
-
     color:#0f172a;
-
     margin-bottom:10px;
-
 }
 
 .profile-card p{
-
     color:#64748b;
-
 }
 
 /* Right Form */
 
 .profile-form{
-
     background:white;
-
     padding:35px;
-
     border-radius:20px;
-
     box-shadow:0 10px 25px rgba(0,0,0,.08);
-
 }
 
 .form-group{
-
     display:flex;
-
     flex-direction:column;
-
     margin-bottom:22px;
-
 }
 
 .form-group label{
-
     display:flex;
-
     align-items:center;
-
     gap:10px;
-
     margin-bottom:10px;
-
     font-weight:600;
-
     color:#334155;
-
 }
 
 .form-group input,
-
 .form-group textarea{
-
     padding:15px;
-
     border:1px solid #d1d5db;
-
     border-radius:12px;
-
     outline:none;
-
     font-size:15px;
-
     transition:.3s;
-
     resize:none;
-
 }
 
 .form-group input:focus,
-
 .form-group textarea:focus{
-
     border-color:#2563eb;
-
     box-shadow:0 0 0 3px rgba(37,99,235,.15);
-
 }
 
 /* Save Button */
 
 .save-btn{
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     gap:10px;
-
     width:100%;
-
     border:none;
-
     background:#2563eb;
-
     color:white;
-
     padding:16px;
-
     border-radius:12px;
-
     cursor:pointer;
-
     font-size:16px;
-
     font-weight:600;
-
     transition:.3s;
-
 }
 
 .save-btn:hover{
-
     background:#1d4ed8;
-
     transform:translateY(-2px);
-
 }
 
 /* Responsive */
 
 @media(max-width:900px){
-
     .profile-container{
-
         grid-template-columns:1fr;
-
     }
-
 }

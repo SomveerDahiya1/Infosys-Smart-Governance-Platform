@@ -207,7 +207,6 @@
 /* Responsive */
 
 @media(max-width:900px){
-
     .assigned-toolbar{
         flex-direction:column;
         align-items:stretch;
@@ -217,11 +216,9 @@
         width:100%;
         justify-content:center;
     }
-
 }
 
 @media(max-width:768px){
-
     .assigned-table{
         overflow-x:auto;
     }
@@ -229,5 +226,4 @@
     table{
         min-width:800px;
     }
-
 }

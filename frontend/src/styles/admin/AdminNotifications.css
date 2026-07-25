@@ -1,257 +1,159 @@
 .notifications-page{
-
     display:flex;
-
     flex-direction:column;
-
     gap:30px;
-
 }
 
 /* Header */
 
 .notifications-header{
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
 }
 
 .notifications-header h1{
-
     font-size:34px;
-
     color:#0f172a;
-
     margin-bottom:8px;
-
 }
 
 .notifications-header p{
-
     color:#64748b;
-
 }
 
 /* Mark All Read Button */
 
 .mark-btn{
-
     display:flex;
-
     align-items:center;
-
     gap:10px;
-
     border:none;
-
     background:#2563eb;
-
     color:white;
-
     padding:14px 22px;
-
     border-radius:12px;
-
     cursor:pointer;
-
     font-weight:600;
-
     transition:.3s;
-
 }
 
 .mark-btn:hover{
-
     background:#1d4ed8;
-
     transform:translateY(-3px);
-
 }
 
 /* Notification List */
 
 .notification-list{
-
     display:flex;
-
     flex-direction:column;
-
     gap:20px;
-
 }
 
 /* Notification Card */
 
 .notification-card{
-
     background:white;
-
     padding:25px;
-
     border-radius:18px;
-
     display:flex;
-
     align-items:center;
-
     gap:22px;
-
     box-shadow:0 10px 25px rgba(0,0,0,.08);
-
     transition:.3s;
-
 }
 
 .notification-card:hover{
-
     transform:translateY(-5px);
-
 }
 
 /* Icons */
 
 .notification-icon{
-
     width:65px;
-
     height:65px;
-
     border-radius:50%;
-
     display:flex;
-
     justify-content:center;
-
     align-items:center;
-
     background:#f8fafc;
-
 }
 
 .notification-icon svg{
-
     font-size:28px;
-
 }
 
 .warning{
-
     color:#f59e0b;
-
 }
 
 .success{
-
     color:#22c55e;
-
 }
 
 .info{
-
     color:#2563eb;
-
 }
 
 /* Content */
 
 .notification-content{
-
     flex:1;
-
 }
 
 .notification-content h3{
-
     margin-bottom:8px;
-
     color:#0f172a;
-
 }
 
 .notification-content p{
-
     color:#64748b;
-
     margin-bottom:10px;
-
     line-height:1.6;
-
 }
 
 .notification-content span{
-
     color:#94a3b8;
-
     font-size:14px;
-
 }
 
 /* Delete */
 
 .delete-btn{
-
     width:45px;
-
     height:45px;
-
     border:none;
-
     border-radius:12px;
-
     background:#fee2e2;
-
     color:#dc2626;
-
     display:flex;
-
     justify-content:center;
-
     align-items:center;
-
     cursor:pointer;
-
     transition:.3s;
-
 }
 
 .delete-btn:hover{
-
     background:#dc2626;
-
     color:white;
-
 }
 
 /* Responsive */
 
 @media(max-width:768px){
-
     .notifications-header{
-
         flex-direction:column;
-
         align-items:flex-start;
-
         gap:20px;
-
     }
 
     .notification-card{
-
         flex-direction:column;
-
         text-align:center;
-
     }
 
     .notification-content{
-
         text-align:center;
-
     }
-
 }
