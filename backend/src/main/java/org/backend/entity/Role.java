@@ -13,16 +13,19 @@ public class Role {
     @Column(name = "role_id")
     private Long roleId;
 
-    @Column(name = "role_name", nullable = false, unique = true)
+    @Column(name = "role_name", nullable = false, unique = true, length = 30)
     private String roleName;
 
+    @Column(name = "description", length = 255)
     private String description;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
 
     public Role() {
     }
+
 
     public Long getRoleId() {
         return roleId;
