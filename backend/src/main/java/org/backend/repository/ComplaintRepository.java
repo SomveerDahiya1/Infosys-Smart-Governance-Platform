@@ -15,4 +15,5 @@ public interface ComplaintRepository
 
     List<Complaint> findByCategoryCategoryId(Long categoryId);
 
+    Long countByStatusStatusName(String pending);
 }

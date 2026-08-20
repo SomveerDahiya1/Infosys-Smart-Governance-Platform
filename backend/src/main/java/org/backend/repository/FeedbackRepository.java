@@ -12,7 +12,10 @@ public interface FeedbackRepository
     List<Feedback> findByComplaintComplaintId(Long complaintId);
 
     List<Feedback> findByCitizenCitizenId(Long citizenId);
-
+    boolean existsByComplaintComplaintIdAndCitizenCitizenId(
+            Long complaintId,
+            Long citizenId
+    );
     Optional<Feedback> findByComplaintComplaintIdAndCitizenCitizenId(
             Long complaintId,
             Long citizenId
