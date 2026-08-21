@@ -15,7 +15,6 @@ public class ComplaintMapper {
 
         ComplaintResponse response =
                 new ComplaintResponse();
-
         response.setComplaintId(
                 complaint.getComplaintId()
         );
@@ -30,14 +29,11 @@ public class ComplaintMapper {
 
 
         if (complaint.getCategory() != null) {
-
             response.setCategory(
                     complaint.getCategory().getCategoryName()
             );
 
         }
-
-
         if (complaint.getPriority() != null) {
 
             response.setPriority(
@@ -45,17 +41,11 @@ public class ComplaintMapper {
             );
 
         }
-
-
         if (complaint.getStatus() != null) {
-
             response.setStatus(
                     complaint.getStatus().getStatusName()
             );
-
         }
-
-
         if (complaint.getLocation() != null) {
 
             response.setAddressLine(
@@ -79,8 +69,6 @@ public class ComplaintMapper {
             );
 
         }
-
-
         response.setSubmittedAt(
                 complaint.getSubmittedAt()
         );

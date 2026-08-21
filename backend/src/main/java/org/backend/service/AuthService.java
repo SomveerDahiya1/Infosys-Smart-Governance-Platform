@@ -10,7 +10,10 @@ import org.backend.exception.ResourceNotFoundException;
 import org.backend.repository.CitizenRepository;
 import org.backend.repository.RoleRepository;
 import org.backend.repository.UserRepository;
+import org.backend.security.JwtService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -18,18 +21,25 @@ public class AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final CitizenRepository citizenRepository;
+    private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthService(
             UserRepository userRepository,
             RoleRepository roleRepository,
-            CitizenRepository citizenRepository
+            CitizenRepository citizenRepository,
+            JwtService jwtService,
+            PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.citizenRepository = citizenRepository;
+        this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
+    @Transactional
     public AuthResponse register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -47,21 +57,20 @@ public class AuthService {
                 );
 
         User user = new User();
-
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
 
-        user.setPasswordHash(request.getPassword());
-
+        user.setPasswordHash(
+                passwordEncoder.encode(
+                        request.getPassword()
+                )
+        );
         user.setPhoneNumber(request.getPhoneNumber());
-
         user.setRole(role);
-
         user.setIsActive(true);
 
         user = userRepository.save(user);
-
 
         if ("CITIZEN".equals(role.getRoleName())) {
 
@@ -73,6 +82,10 @@ public class AuthService {
         }
 
 
+        String token =
+                jwtService.generateToken(user);
+
+
         AuthResponse response = new AuthResponse();
 
         response.setUserId(user.getUserId());
@@ -80,6 +93,7 @@ public class AuthService {
         response.setLastName(user.getLastName());
         response.setEmail(user.getEmail());
         response.setRole(role.getRoleName());
+        response.setToken(token);
 
         return response;
     }
@@ -95,11 +109,19 @@ public class AuthService {
                         )
                 );
 
-        if (!user.getPasswordHash().equals(request.getPassword())) {
+
+        if (!passwordEncoder.matches(
+                request.getPassword(),
+                user.getPasswordHash()
+        )) {
             throw new IllegalArgumentException(
                     "Invalid password"
             );
         }
+
+
+        String token =
+                jwtService.generateToken(user);
 
 
         AuthResponse response = new AuthResponse();
@@ -115,7 +137,10 @@ public class AuthService {
             );
         }
 
+        response.setToken(token);
+
         return response;
     }
+
 
 }

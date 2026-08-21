@@ -9,12 +9,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleResourceNotFoundException(
+    public ResponseEntity<ApiResponse<Object>> handleResourceNotFoundException(
             ResourceNotFoundException exception
     ) {
 
-        ApiResponse<Void> response =
+        ApiResponse<Object> response =
                 new ApiResponse<>(
                         false,
                         exception.getMessage(),
@@ -29,11 +30,11 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ApiResponse<Void>> handleUnauthorizedException(
+    public ResponseEntity<ApiResponse<Object>> handleUnauthorizedException(
             UnauthorizedException exception
     ) {
 
-        ApiResponse<Void> response =
+        ApiResponse<Object> response =
                 new ApiResponse<>(
                         false,
                         exception.getMessage(),
@@ -42,20 +43,39 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(
                 response,
-                HttpStatus.FORBIDDEN
+                HttpStatus.UNAUTHORIZED
+        );
+    }
+
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Object>> handleIllegalArgumentException(
+            IllegalArgumentException exception
+    ) {
+
+        ApiResponse<Object> response =
+                new ApiResponse<>(
+                        false,
+                        exception.getMessage(),
+                        null
+                );
+
+        return new ResponseEntity<>(
+                response,
+                HttpStatus.BAD_REQUEST
         );
     }
 
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleGeneralException(
+    public ResponseEntity<ApiResponse<Object>> handleGeneralException(
             Exception exception
     ) {
 
-        ApiResponse<Void> response =
+        ApiResponse<Object> response =
                 new ApiResponse<>(
                         false,
-                        "Something went wrong",
+                        exception.getMessage(),
                         null
                 );
 
@@ -64,5 +84,6 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
+
 
 }

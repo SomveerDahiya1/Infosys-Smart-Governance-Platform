@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "citizens")
 public class Citizen {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "citizen_id")
@@ -33,15 +32,25 @@ public class Citizen {
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
-
-
+    private LocalDateTime updatedAt ;
     public Citizen() {
     }
 
-
     public Long getCitizenId() {
         return citizenId;
+    }
+    @PrePersist
+    public void prePersist() {
+
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+
     }
 
     public void setCitizenId(Long citizenId) {

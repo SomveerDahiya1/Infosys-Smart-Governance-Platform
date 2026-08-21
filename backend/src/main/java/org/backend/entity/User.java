@@ -1,8 +1,10 @@
 package org.backend.entity;
 
 import jakarta.persistence.*;
-
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "users")
@@ -48,6 +50,24 @@ public class User {
     public User() {
     }
 
+    @PrePersist
+    public void prePersist() {
+
+
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+
+
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+
+
+        this.updatedAt = LocalDateTime.now();
+
+
+    }
 
     public Long getUserId() {
         return userId;
