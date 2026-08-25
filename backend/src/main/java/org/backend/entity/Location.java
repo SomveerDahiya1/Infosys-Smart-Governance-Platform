@@ -1,5 +1,4 @@
 package org.backend.entity;
-
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -14,32 +13,62 @@ public class Location {
     @Column(name = "location_id")
     private Long locationId;
 
-    @Column(name = "address_line", nullable = false, columnDefinition = "TEXT")
+    @Column(
+            name = "address_line",
+            nullable = false,
+            columnDefinition = "TEXT"
+    )
     private String addressLine;
 
     @Column(name = "area", length = 100)
     private String area;
 
-    @Column(name = "city", nullable = false, length = 100)
+    @Column(
+            name = "city",
+            nullable = false,
+            length = 100
+    )
     private String city;
 
-    @Column(name = "state", nullable = false, length = 100)
+    @Column(
+            name = "state",
+            nullable = false,
+            length = 100
+    )
     private String state;
 
     @Column(name = "pincode", length = 10)
     private String pincode;
 
-    @Column(name = "latitude", precision = 10, scale = 7)
+    @Column(
+            name = "latitude",
+            precision = 10,
+            scale = 7
+    )
     private BigDecimal latitude;
 
-    @Column(name = "longitude", precision = 10, scale = 7)
+    @Column(
+            name = "longitude",
+            precision = 10,
+            scale = 7
+    )
     private BigDecimal longitude;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(
+            name = "created_at",
+            nullable = false
+    )
     private LocalDateTime createdAt;
 
 
     public Location() {
+    }
+
+
+    @PrePersist
+    public void prePersist() {
+
+        this.createdAt = LocalDateTime.now();
     }
 
 
@@ -55,7 +84,9 @@ public class Location {
         return addressLine;
     }
 
-    public void setAddressLine(String addressLine) {
+    public void setAddressLine(
+            String addressLine
+    ) {
         this.addressLine = addressLine;
     }
 
@@ -95,7 +126,9 @@ public class Location {
         return latitude;
     }
 
-    public void setLatitude(BigDecimal latitude) {
+    public void setLatitude(
+            BigDecimal latitude
+    ) {
         this.latitude = latitude;
     }
 
@@ -103,7 +136,9 @@ public class Location {
         return longitude;
     }
 
-    public void setLongitude(BigDecimal longitude) {
+    public void setLongitude(
+            BigDecimal longitude
+    ) {
         this.longitude = longitude;
     }
 
@@ -111,8 +146,10 @@ public class Location {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(
+            LocalDateTime createdAt
+    ) {
         this.createdAt = createdAt;
     }
-
 }
+

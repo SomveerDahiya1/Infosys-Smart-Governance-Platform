@@ -1,5 +1,8 @@
 package org.backend.controller;
-
+import org.backend.dto.response.DashboardResponse;
+import java.util.List ;
+import org.backend.dto.response.ComplaintStatusHistoryResponse;
+import java.util.List;
 import org.backend.dto.request.AssignComplaintRequest;
 import org.backend.dto.request.CreateComplaintRequest;
 import org.backend.dto.request.UpdateComplaintRequest;
@@ -10,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 @RestController
 @RequestMapping("/api/complaints")
 public class ComplaintController {
@@ -23,8 +27,48 @@ public class ComplaintController {
     ) {
         this.complaintService = complaintService;
     }
+    @GetMapping("/dashboard")
+    public ResponseEntity<ApiResponse<DashboardResponse>>
+    getDashboardStatistics() {
 
+        DashboardResponse response =
+                complaintService.getDashboardStatistics();
 
+        ApiResponse<DashboardResponse> apiResponse =
+                new ApiResponse<>(
+                        true,
+                        "Dashboard statistics fetched successfully",
+                        response
+                );
+
+        return ResponseEntity.ok(
+                apiResponse
+        );
+    }
+    @GetMapping("/citizen/{citizenId}")
+    public ResponseEntity<
+            ApiResponse<List<ComplaintResponse>>
+            >
+    getComplaintsByCitizen(
+            @PathVariable Long citizenId
+    ) {
+
+        List<ComplaintResponse> response =
+                complaintService.getComplaintsByCitizen(
+                        citizenId
+                );
+
+        ApiResponse<List<ComplaintResponse>> apiResponse =
+                new ApiResponse<>(
+                        true,
+                        "Citizen complaints fetched successfully",
+                        response
+                );
+
+        return ResponseEntity.ok(
+                apiResponse
+        );
+    }
     @PostMapping("/citizen/{citizenId}")
     public ResponseEntity<ApiResponse<ComplaintResponse>>
     createComplaint(
@@ -51,8 +95,7 @@ public class ComplaintController {
         );
     }
 
-
-    @GetMapping("/{complaintId}")
+    @GetMapping("/{complaintId:\\d+}")
     public ResponseEntity<ApiResponse<ComplaintResponse>>
     getComplaintById(
             @PathVariable Long complaintId
@@ -70,7 +113,66 @@ public class ComplaintController {
                         response
                 );
 
+        return ResponseEntity.ok(
+                apiResponse
+        );
+    }
+    @GetMapping("/filter")
+    public ResponseEntity<
+            ApiResponse<List<ComplaintResponse>>
+            >
+    filterComplaints(
+
+            @RequestParam(required = false)
+            Short statusId,
+
+            @RequestParam(required = false)
+            Short priorityId,
+
+            @RequestParam(required = false)
+            Long categoryId
+    ) {
+
+        List<ComplaintResponse> response =
+                complaintService.filterComplaints(
+                        statusId,
+                        priorityId,
+                        categoryId
+                );
+
+        ApiResponse<List<ComplaintResponse>> apiResponse =
+                new ApiResponse<>(
+                        true,
+                        "Complaints filtered successfully",
+                        response
+                );
+
         return ResponseEntity.ok(apiResponse);
+    }
+    @GetMapping("/officer/{officerId}")
+    public ResponseEntity<
+            ApiResponse<List<ComplaintResponse>>
+            >
+    getAssignedComplaints(
+            @PathVariable Long officerId
+    ) {
+
+        List<ComplaintResponse> response =
+                complaintService.getAssignedComplaints(
+                        officerId
+                );
+
+        ApiResponse<List<ComplaintResponse>>
+                apiResponse =
+                new ApiResponse<>(
+                        true,
+                        "Assigned complaints fetched successfully",
+                        response
+                );
+
+        return ResponseEntity.ok(
+                apiResponse
+        );
     }
 
 
@@ -96,7 +198,9 @@ public class ComplaintController {
                         response
                 );
 
-        return ResponseEntity.ok(apiResponse);
+        return ResponseEntity.ok(
+                apiResponse
+        );
     }
 
 
@@ -122,8 +226,34 @@ public class ComplaintController {
                         response
                 );
 
-        return ResponseEntity.ok(apiResponse);
+        return ResponseEntity.ok(
+                apiResponse
+        );
     }
 
+    @GetMapping("/{complaintId}/history")
+    public ResponseEntity<
+            ApiResponse<List<ComplaintStatusHistoryResponse>>
+            >
+    getComplaintStatusHistory(
+            @PathVariable Long complaintId
+    ) {
 
+        List<ComplaintStatusHistoryResponse> response =
+                complaintService.getComplaintStatusHistory(
+                        complaintId
+                );
+
+        ApiResponse<List<ComplaintStatusHistoryResponse>>
+                apiResponse =
+                new ApiResponse<>(
+                        true,
+                        "Complaint status history fetched successfully",
+                        response
+                );
+
+        return ResponseEntity.ok(
+                apiResponse
+        );
+    }
 }

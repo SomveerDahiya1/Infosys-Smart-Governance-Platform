@@ -34,7 +34,10 @@ public class ComplaintStatusHistory {
 
     @Column(name = "changed_at", nullable = false)
     private LocalDateTime changedAt;
-
+    @PrePersist
+    public void prePersist() {
+        this.changedAt = LocalDateTime.now();
+    }
 
     public ComplaintStatusHistory() {
     }

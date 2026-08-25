@@ -1,7 +1,5 @@
 package org.backend.entity;
-
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -37,7 +35,11 @@ public class Complaint {
     @Column(name = "title", nullable = false, length = 200)
     private String title;
 
-    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
+    @Column(
+            name = "description",
+            nullable = false,
+            columnDefinition = "TEXT"
+    )
     private String description;
 
     @Column(name = "submitted_at", nullable = false)
@@ -60,6 +62,27 @@ public class Complaint {
 
 
     public Complaint() {
+    }
+
+
+    @PrePersist
+    public void prePersist() {
+
+        LocalDateTime now = LocalDateTime.now();
+
+        this.createdAt = now;
+        this.updatedAt = now;
+
+        if (this.submittedAt == null) {
+            this.submittedAt = now;
+        }
+    }
+
+
+    @PreUpdate
+    public void preUpdate() {
+
+        this.updatedAt = LocalDateTime.now();
     }
 
 
@@ -139,8 +162,11 @@ public class Complaint {
         return estimatedCompletionDate;
     }
 
-    public void setEstimatedCompletionDate(LocalDate estimatedCompletionDate) {
-        this.estimatedCompletionDate = estimatedCompletionDate;
+    public void setEstimatedCompletionDate(
+            LocalDate estimatedCompletionDate
+    ) {
+        this.estimatedCompletionDate =
+                estimatedCompletionDate;
     }
 
     public LocalDateTime getResolvedAt() {
@@ -174,5 +200,5 @@ public class Complaint {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-
 }
+

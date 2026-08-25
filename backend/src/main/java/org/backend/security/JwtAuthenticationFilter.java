@@ -15,6 +15,7 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     private final JwtService jwtService;
     private final CustomUserDetailsService userDetailsService;
 
@@ -38,9 +39,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader =
                 request.getHeader("Authorization");
 
+        System.out.println(
+                "AUTH HEADER: " + authHeader
+        );
+
 
         if (authHeader == null
                 || !authHeader.startsWith("Bearer ")) {
+
+            System.out.println(
+                    "JWT NOT FOUND"
+            );
 
             filterChain.doFilter(request, response);
             return;
@@ -50,9 +59,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwtToken =
                 authHeader.substring(7);
 
-
         String userEmail =
                 jwtService.extractEmail(jwtToken);
+
+        System.out.println(
+                "JWT EMAIL: " + userEmail
+        );
 
 
         if (userEmail != null
@@ -65,10 +77,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             .loadUserByUsername(userEmail);
 
 
-            if (jwtService.isTokenValid(
-                    jwtToken,
-                    userDetails
-            )) {
+            boolean isValid =
+                    jwtService.isTokenValid(
+                            jwtToken,
+                            userDetails
+                    );
+
+            System.out.println(
+                    "JWT VALID: " + isValid
+            );
+
+
+            if (isValid) {
 
                 UsernamePasswordAuthenticationToken
                         authenticationToken =
@@ -90,12 +110,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         .setAuthentication(
                                 authenticationToken
                         );
+
+                System.out.println(
+                        "AUTHENTICATION SET SUCCESSFULLY"
+                );
             }
         }
 
 
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(
+                request,
+                response
+        );
     }
-
-
 }

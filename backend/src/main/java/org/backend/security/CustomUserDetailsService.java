@@ -1,5 +1,5 @@
 package org.backend.security;
-
+import jakarta.transaction.Transactional;
 import org.backend.entity.User;
 import org.backend.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,7 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class CustomUserDetailsService
+        implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -21,6 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(
             String email
     ) throws UsernameNotFoundException {
@@ -33,16 +35,22 @@ public class CustomUserDetailsService implements UserDetailsService {
                         )
                 );
 
+
         return org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
-                .password(user.getPasswordHash())
+                .withUsername(
+                        user.getEmail()
+                )
+                .password(
+                        user.getPasswordHash()
+                )
                 .authorities(
                         "ROLE_" +
                                 user.getRole()
                                         .getRoleName()
                 )
-                .disabled(!user.getIsActive())
+                .disabled(
+                        !user.getIsActive()
+                )
                 .build();
     }
-
 }

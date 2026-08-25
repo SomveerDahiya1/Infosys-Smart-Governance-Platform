@@ -4,6 +4,10 @@ import java.time.LocalDate;
 
 public class UpdateComplaintRequest {
 
+    private String title;
+
+    private String description;
+
     private Short statusId;
 
     private Short priorityId;
@@ -17,6 +21,24 @@ public class UpdateComplaintRequest {
     }
 
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+
     public Short getStatusId() {
         return statusId;
     }
@@ -25,6 +47,7 @@ public class UpdateComplaintRequest {
         this.statusId = statusId;
     }
 
+
     public Short getPriorityId() {
         return priorityId;
     }
@@ -32,6 +55,7 @@ public class UpdateComplaintRequest {
     public void setPriorityId(Short priorityId) {
         this.priorityId = priorityId;
     }
+
 
     public LocalDate getEstimatedCompletionDate() {
         return estimatedCompletionDate;
@@ -43,6 +67,7 @@ public class UpdateComplaintRequest {
         this.estimatedCompletionDate = estimatedCompletionDate;
     }
 
+
     public String getRemarks() {
         return remarks;
     }
@@ -50,5 +75,6 @@ public class UpdateComplaintRequest {
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
+
 
 }

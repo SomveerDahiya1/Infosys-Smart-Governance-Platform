@@ -9,15 +9,31 @@ import java.util.Optional;
 public interface ComplaintAssignmentRepository
         extends JpaRepository<ComplaintAssignment, Long> {
 
-    List<ComplaintAssignment> findByComplaintComplaintId(Long complaintId);
 
-    List<ComplaintAssignment> findByOfficerOfficerId(Long officerId);
-
-    Optional<ComplaintAssignment> findByComplaintComplaintIdAndIsCurrentTrue(
+    // Get complete assignment history of a complaint
+    List<ComplaintAssignment>
+    findByComplaintComplaintId(
             Long complaintId
     );
 
-    List<ComplaintAssignment> findByOfficerOfficerIdAndIsCurrentTrue(
+
+    // Get complete assignment history of an officer
+    List<ComplaintAssignment>
+    findByOfficerOfficerId(
+            Long officerId
+    );
+
+
+    // Get current active assignment of a complaint
+    Optional<ComplaintAssignment>
+    findByComplaintComplaintIdAndIsCurrentTrue(
+            Long complaintId
+    );
+
+
+    // Get all currently assigned complaints of an officer
+    List<ComplaintAssignment>
+    findByOfficerOfficerIdAndIsCurrentTrue(
             Long officerId
     );
 
