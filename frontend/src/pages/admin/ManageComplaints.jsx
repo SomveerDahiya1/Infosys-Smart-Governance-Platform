@@ -1,158 +1,959 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
 import {
     FaSearch,
     FaFilter,
     FaArrowRight,
-    FaClipboardList
+    FaClipboardList,
+    FaTimes
 } from "react-icons/fa";
+
+import { useNavigate } from "react-router-dom";
+
+import complaintService from "../../services/complaintService";
+
 import "../../styles/admin/ManageComplaints.css";
 
+
 export default function ManageComplaints() {
-    const [search, setSearch] = useState("");
 
-    const complaints = [
-        {
-            id: "CP2026001",
-            citizen: "Somveer Dahiya",
-            category: "Road Damage",
-            location: "Sector 14",
-            priority: "High",
-            status: "Pending"
-        },
-        {
-            id: "CP2026002",
-            citizen: "Rahul Sharma",
-            category: "Water Leakage",
-            location: "Sector 21",
-            priority: "Medium",
-            status: "In Progress"
-        },
-        {
-            id: "CP2026003",
-            citizen: "Amit Kumar",
-            category: "Street Light",
-            location: "Sector 8",
-            priority: "Low",
-            status: "Resolved"
-        },
-        {
-            id: "CP2026004",
-            citizen: "Rohit Singh",
-            category: "Garbage",
-            location: "Sector 45",
-            priority: "High",
-            status: "Pending"
-        },
-        {
-            id: "CP2026005",
-            citizen: "Anjali Verma",
-            category: "Drainage",
-            location: "Sector 7",
-            priority: "Medium",
-            status: "Resolved"
+    const navigate = useNavigate();
+
+
+    // ==========================================
+    // STATE
+    // ==========================================
+
+    const [search, setSearch] =
+        useState("");
+
+    const [complaints, setComplaints] =
+        useState([]);
+
+    const [loading, setLoading] =
+        useState(true);
+
+    const [error, setError] =
+        useState("");
+
+
+    // ==========================================
+    // FILTER STATE
+    // ==========================================
+
+    const [showFilters, setShowFilters] =
+        useState(false);
+
+    const [statusId, setStatusId] =
+        useState("");
+
+    const [priorityId, setPriorityId] =
+        useState("");
+
+    const [categoryId, setCategoryId] =
+        useState("");
+
+
+    // ==========================================
+    // FETCH ALL COMPLAINTS
+    // ==========================================
+
+    const fetchComplaints = async () => {
+
+        try {
+
+            setLoading(true);
+            setError("");
+
+            const response =
+                await complaintService.getAllComplaints();
+
+            if (response.success) {
+
+                setComplaints(
+                    response.data || []
+                );
+
+            } else {
+
+                setError(
+                    response.message ||
+                    "Failed to load complaints"
+                );
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Error fetching complaints:",
+                error
+            );
+
+            setError(
+                error.response?.data?.message ||
+                "Failed to load complaints"
+            );
+
+        } finally {
+
+            setLoading(false);
         }
-    ];
+    };
 
-    const filtered = complaints.filter((complaint) =>
-        complaint.id.toLowerCase().includes(search.toLowerCase()) ||
-        complaint.citizen.toLowerCase().includes(search.toLowerCase()) ||
-        complaint.category.toLowerCase().includes(search.toLowerCase()) ||
-        complaint.location.toLowerCase().includes(search.toLowerCase())
-    );
+
+    // ==========================================
+    // INITIAL LOAD
+    // ==========================================
+
+    useEffect(() => {
+
+        fetchComplaints();
+
+    }, []);
+
+
+    // ==========================================
+    // APPLY FILTER
+    // ==========================================
+
+    const handleApplyFilters = async () => {
+
+        try {
+
+            setLoading(true);
+            setError("");
+
+            const response =
+                await complaintService.filterComplaints(
+                    statusId,
+                    priorityId,
+                    categoryId
+                );
+
+            if (response.success) {
+
+                setComplaints(
+                    response.data || []
+                );
+
+            } else {
+
+                setError(
+                    response.message ||
+                    "Failed to filter complaints"
+                );
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Error filtering complaints:",
+                error
+            );
+
+            setError(
+                error.response?.data?.message ||
+                "Failed to filter complaints"
+            );
+
+        } finally {
+
+            setLoading(false);
+        }
+    };
+
+
+    // ==========================================
+    // CLEAR FILTERS
+    // ==========================================
+
+    const handleClearFilters = async () => {
+
+        setStatusId("");
+        setPriorityId("");
+        setCategoryId("");
+
+        try {
+
+            setLoading(true);
+            setError("");
+
+            const response =
+                await complaintService.getAllComplaints();
+
+            if (response.success) {
+
+                setComplaints(
+                    response.data || []
+                );
+
+            } else {
+
+                setError(
+                    response.message ||
+                    "Failed to load complaints"
+                );
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Error clearing filters:",
+                error
+            );
+
+            setError(
+                error.response?.data?.message ||
+                "Failed to load complaints"
+            );
+
+        } finally {
+
+            setLoading(false);
+        }
+    };
+
+
+    // ==========================================
+    // SEARCH
+    // ==========================================
+
+    const filtered =
+        complaints.filter((complaint) => {
+
+            const searchText =
+                search.toLowerCase().trim();
+
+
+            if (!searchText) {
+                return true;
+            }
+
+
+            const complaintId =
+                `CP${String(
+                    complaint.complaintId
+                ).padStart(6, "0")}`;
+
+
+            const citizen =
+                String(
+                    complaint.citizenName || ""
+                );
+
+
+            const category =
+                String(
+                    complaint.category || ""
+                );
+
+
+            const title =
+                String(
+                    complaint.title || ""
+                );
+
+
+            const area =
+                String(
+                    complaint.area || ""
+                );
+
+
+            const city =
+                String(
+                    complaint.city || ""
+                );
+
+
+            const status =
+                String(
+                    complaint.status || ""
+                );
+
+
+            const priority =
+                String(
+                    complaint.priority || ""
+                );
+
+
+            return (
+
+                complaintId
+                    .toLowerCase()
+                    .includes(searchText)
+
+                ||
+
+                String(
+                    complaint.complaintId || ""
+                )
+                    .toLowerCase()
+                    .includes(searchText)
+
+                ||
+
+                citizen
+                    .toLowerCase()
+                    .includes(searchText)
+
+                ||
+
+                category
+                    .toLowerCase()
+                    .includes(searchText)
+
+                ||
+
+                title
+                    .toLowerCase()
+                    .includes(searchText)
+
+                ||
+
+                area
+                    .toLowerCase()
+                    .includes(searchText)
+
+                ||
+
+                city
+                    .toLowerCase()
+                    .includes(searchText)
+
+                ||
+
+                status
+                    .toLowerCase()
+                    .includes(searchText)
+
+                ||
+
+                priority
+                    .toLowerCase()
+                    .includes(searchText)
+            );
+        });
+
+
+    // ==========================================
+    // STATUS CLASS
+    // ==========================================
+
+    const getStatusClass = (status) => {
+
+        if (!status) {
+            return "pending";
+        }
+
+        switch (
+            status.toUpperCase()
+            ) {
+
+            case "PENDING":
+                return "pending";
+
+            case "ASSIGNED":
+            case "IN_PROGRESS":
+                return "progress";
+
+            case "RESOLVED":
+            case "CLOSED":
+                return "resolved";
+
+            default:
+                return "pending";
+        }
+    };
+
+
+    // ==========================================
+    // PRIORITY CLASS
+    // ==========================================
+
+    const getPriorityClass = (priority) => {
+
+        if (!priority) {
+            return "low";
+        }
+
+        switch (
+            priority.toUpperCase()
+            ) {
+
+            case "HIGH":
+                return "high";
+
+            case "MEDIUM":
+                return "medium";
+
+            case "LOW":
+                return "low";
+
+            default:
+                return "low";
+        }
+    };
+
+
+    // ==========================================
+    // LOADING
+    // ==========================================
+
+    if (loading) {
+
+        return (
+
+            <div className="complaints-page">
+
+                <div className="complaints-header">
+
+                    <div>
+
+                        <h1>
+                            Manage Complaints
+                        </h1>
+
+                        <p>
+                            Loading complaints...
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div className="empty-state">
+
+                    <FaClipboardList />
+
+                    <h2>
+                        Loading Complaints
+                    </h2>
+
+                    <p>
+                        Please wait while we fetch
+                        the latest complaints.
+                    </p>
+
+                </div>
+
+            </div>
+        );
+    }
+
+
+    // ==========================================
+    // ERROR
+    // ==========================================
+
+    if (error) {
+
+        return (
+
+            <div className="complaints-page">
+
+                <div className="complaints-header">
+
+                    <div>
+
+                        <h1>
+                            Manage Complaints
+                        </h1>
+
+                        <p>
+                            View and monitor all
+                            complaints across the city.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div className="empty-state">
+
+                    <FaClipboardList />
+
+                    <h2>
+                        Unable to Load Complaints
+                    </h2>
+
+                    <p>
+                        {error}
+                    </p>
+
+                </div>
+
+            </div>
+        );
+    }
+
+
+    // ==========================================
+    // MAIN UI
+    // ==========================================
 
     return (
+
         <div className="complaints-page">
-            {/* Header */}
+
+
+            {/* ==================================
+                HEADER
+            ================================== */}
+
             <div className="complaints-header">
+
                 <div>
-                    <h1>Manage Complaints</h1>
+
+                    <h1>
+                        Manage Complaints
+                    </h1>
+
                     <p>
-                        View and monitor all complaints across the city.
+                        View and monitor all complaints
+                        across the city.
                     </p>
+
                 </div>
+
             </div>
 
-            {/* Toolbar */}
+
+            {/* ==================================
+                TOOLBAR
+            ================================== */}
+
             <div className="complaints-toolbar">
+
                 <div className="search-box">
+
                     <FaSearch />
 
                     <input
                         type="text"
                         placeholder="Search complaint..."
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={(e) =>
+                            setSearch(
+                                e.target.value
+                            )
+                        }
                     />
+
                 </div>
 
-                <button className="filter-btn">
-                    <FaFilter />
-                    Filter
+
+                <button
+                    className="filter-btn"
+                    onClick={() =>
+                        setShowFilters(
+                            !showFilters
+                        )
+                    }
+                >
+
+                    {showFilters ? (
+                        <FaTimes />
+                    ) : (
+                        <FaFilter />
+                    )}
+
+                    {showFilters
+                        ? "Close"
+                        : "Filter"
+                    }
+
                 </button>
+
             </div>
 
-            {/* Table */}
-            <div className="complaints-table">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Citizen</th>
-                        <th>Category</th>
-                        <th>Location</th>
-                        <th>Priority</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
 
-                    <tbody>
-                    {filtered.map((complaint) => (
-                        <tr key={complaint.id}>
-                            <td>{complaint.id}</td>
-                            <td>{complaint.citizen}</td>
-                            <td>{complaint.category}</td>
-                            <td>{complaint.location}</td>
+            {/* ==================================
+                FILTER PANEL
+            ================================== */}
 
-                            <td>
-                                    <span className={complaint.priority.toLowerCase()}>
-                                        {complaint.priority}
-                                    </span>
-                            </td>
+            {showFilters && (
 
-                            <td>
-                                    <span
-                                        className={
-                                            complaint.status === "Pending"
-                                                ? "pending"
-                                                : complaint.status === "Resolved"
-                                                    ? "resolved"
-                                                    : "progress"
-                                        }
-                                    >
-                                        {complaint.status}
-                                    </span>
-                            </td>
+                <div className="filter-panel">
 
-                            <td>
-                                <button className="open-btn">
-                                    Open
-                                    <FaArrowRight />
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
+                    <div className="filter-header">
 
-            {filtered.length === 0 && (
-                <div className="empty-state">
-                    <FaClipboardList />
-                    <h2>No Complaints Found</h2>
-                    <p>Try another keyword.</p>
+                        <div>
+
+                            <h3>
+                                Filter Complaints
+                            </h3>
+
+                            <p>
+                                Narrow down complaints
+                                using the available filters.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div className="filter-fields">
+
+
+                        {/* STATUS */}
+
+                        <div className="filter-field">
+
+                            <label>
+                                Status
+                            </label>
+
+                            <select
+                                value={statusId}
+                                onChange={(e) =>
+                                    setStatusId(
+                                        e.target.value
+                                    )
+                                }
+                            >
+
+                                <option value="">
+                                    All Statuses
+                                </option>
+
+                                <option value="1">
+                                    Pending
+                                </option>
+
+                                <option value="2">
+                                    Assigned
+                                </option>
+
+                                <option value="3">
+                                    In Progress
+                                </option>
+
+                                <option value="4">
+                                    Resolved
+                                </option>
+
+                                <option value="5">
+                                    Closed
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        {/* PRIORITY */}
+
+                        <div className="filter-field">
+
+                            <label>
+                                Priority
+                            </label>
+
+                            <select
+                                value={priorityId}
+                                onChange={(e) =>
+                                    setPriorityId(
+                                        e.target.value
+                                    )
+                                }
+                            >
+
+                                <option value="">
+                                    All Priorities
+                                </option>
+
+                                <option value="1">
+                                    Low
+                                </option>
+
+                                <option value="2">
+                                    Medium
+                                </option>
+
+                                <option value="3">
+                                    High
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        {/* CATEGORY */}
+
+                        <div className="filter-field">
+
+                            <label>
+                                Category
+                            </label>
+
+                            <select
+                                value={categoryId}
+                                onChange={(e) =>
+                                    setCategoryId(
+                                        e.target.value
+                                    )
+                                }
+                            >
+
+                                <option value="">
+                                    All Categories
+                                </option>
+
+                                <option value="1">
+                                    Road
+                                </option>
+
+                                <option value="2">
+                                    Water
+                                </option>
+
+                                <option value="3">
+                                    Sanitation
+                                </option>
+
+                                <option value="4">
+                                    Electricity
+                                </option>
+
+                                <option value="5">
+                                    Drainage
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    {/* FILTER ACTIONS */}
+
+                    <div className="filter-actions">
+
+                        <button
+                            className="clear-filter-btn"
+                            onClick={
+                                handleClearFilters
+                            }
+                        >
+                            Clear Filters
+                        </button>
+
+                        <button
+                            className="apply-filter-btn"
+                            onClick={
+                                handleApplyFilters
+                            }
+                        >
+                            Apply Filters
+                        </button>
+
+                    </div>
+
                 </div>
             )}
+
+
+            {/* ==================================
+                TABLE
+            ================================== */}
+
+            {filtered.length > 0 ? (
+
+                <div className="complaints-table">
+
+                    <table>
+
+                        <thead>
+
+                        <tr>
+
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                Citizen
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Location
+                            </th>
+
+                            <th>
+                                Priority
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                        {filtered.map(
+                            (complaint) => {
+
+                                const complaintId =
+                                    `CP${String(
+                                        complaint.complaintId
+                                    ).padStart(
+                                        6,
+                                        "0"
+                                    )}`;
+
+
+                                return (
+
+                                    <tr
+                                        key={
+                                            complaint.complaintId
+                                        }
+                                    >
+
+                                        <td>
+                                            {complaintId}
+                                        </td>
+
+
+                                        <td>
+                                            {
+                                                complaint.citizenName ||
+                                                "Unknown Citizen"
+                                            }
+                                        </td>
+
+
+                                        <td>
+                                            {
+                                                complaint.category ||
+                                                "N/A"
+                                            }
+                                        </td>
+
+
+                                        <td>
+
+                                            {
+                                                complaint.area ||
+                                                complaint.city ||
+                                                complaint.addressLine ||
+                                                "N/A"
+                                            }
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span
+                                                className={
+                                                    getPriorityClass(
+                                                        complaint.priority
+                                                    )
+                                                }
+                                            >
+
+                                                {
+                                                    complaint.priority ||
+                                                    "LOW"
+                                                }
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span
+                                                className={
+                                                    getStatusClass(
+                                                        complaint.status
+                                                    )
+                                                }
+                                            >
+
+                                                {
+                                                    complaint.status ||
+                                                    "PENDING"
+                                                }
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <button
+                                                className="open-btn"
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/admin/complaints/${complaint.complaintId}`
+                                                    )
+                                                }
+                                            >
+
+                                                Open
+
+                                                <FaArrowRight />
+
+                                            </button>
+
+                                        </td>
+
+                                    </tr>
+
+                                );
+                            }
+                        )}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            ) : (
+
+                <div className="empty-state">
+
+                    <FaClipboardList />
+
+                    <h2>
+                        No Complaints Found
+                    </h2>
+
+                    <p>
+
+                        {search
+                            ? "Try another keyword."
+                            : "There are no complaints matching the selected filters."
+                        }
+
+                    </p>
+
+                </div>
+
+            )}
+
         </div>
     );
 }

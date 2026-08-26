@@ -4,7 +4,10 @@
     gap:30px;
 }
 
-/* Header */
+
+/* ==========================================
+   HEADER
+========================================== */
 
 .complaints-header{
     display:flex;
@@ -22,7 +25,10 @@
     color:#64748b;
 }
 
-/* Toolbar */
+
+/* ==========================================
+   TOOLBAR
+========================================== */
 
 .complaints-toolbar{
     display:flex;
@@ -57,32 +63,215 @@
 .filter-btn{
     display:flex;
     align-items:center;
+    justify-content:center;
     gap:10px;
+
     border:none;
+
     background:#2563eb;
     color:white;
+
     padding:14px 22px;
+
     border-radius:12px;
+
     cursor:pointer;
+
     font-weight:600;
+
     transition:.3s;
 }
 
 .filter-btn:hover{
     background:#1d4ed8;
+    transform:translateY(-1px);
 }
 
-/* Table */
+
+/* ==========================================
+   FILTER PANEL
+========================================== */
+
+.filter-panel{
+    background:white;
+
+    padding:24px;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    border:1px solid #e2e8f0;
+}
+
+
+.filter-header{
+    margin-bottom:22px;
+}
+
+.filter-header h3{
+    margin:0 0 6px;
+
+    font-size:20px;
+
+    color:#0f172a;
+}
+
+.filter-header p{
+    margin:0;
+
+    color:#64748b;
+
+    font-size:14px;
+}
+
+
+/* ==========================================
+   FILTER FIELDS
+========================================== */
+
+.filter-fields{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap:20px;
+}
+
+
+.filter-field{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+}
+
+
+.filter-field label{
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#334155;
+}
+
+
+.filter-field select{
+
+    width:100%;
+
+    padding:12px 14px;
+
+    border:1px solid #cbd5e1;
+
+    border-radius:10px;
+
+    background:white;
+
+    color:#0f172a;
+
+    font-size:14px;
+
+    outline:none;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+
+.filter-field select:focus{
+
+    border-color:#2563eb;
+
+    box-shadow:
+            0 0 0 3px
+            rgba(37,99,235,.1);
+}
+
+
+/* ==========================================
+   FILTER ACTIONS
+========================================== */
+
+.filter-actions{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:12px;
+
+    margin-top:24px;
+}
+
+
+.clear-filter-btn,
+.apply-filter-btn{
+
+    border:none;
+
+    padding:12px 20px;
+
+    border-radius:10px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+
+.clear-filter-btn{
+
+    background:#f1f5f9;
+
+    color:#334155;
+}
+
+.clear-filter-btn:hover{
+
+    background:#e2e8f0;
+}
+
+
+.apply-filter-btn{
+
+    background:#2563eb;
+
+    color:white;
+}
+
+.apply-filter-btn:hover{
+
+    background:#1d4ed8;
+
+    transform:translateY(-1px);
+}
+
+
+/* ==========================================
+   TABLE
+========================================== */
 
 .complaints-table{
     background:white;
+
     border-radius:18px;
+
     overflow:hidden;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    box-shadow:
+            0 10px 30px
+            rgba(0,0,0,.08);
 }
 
 table{
     width:100%;
+
     border-collapse:collapse;
 }
 
@@ -92,13 +281,17 @@ thead{
 
 th{
     color:white;
+
     padding:18px;
+
     text-align:left;
 }
 
 td{
     padding:18px;
-    border-bottom:1px solid #edf2f7;
+
+    border-bottom:
+            1px solid #edf2f7;
 }
 
 tbody tr{
@@ -109,123 +302,220 @@ tbody tr:hover{
     background:#f8fafc;
 }
 
-/* Priority */
+
+/* ==========================================
+   PRIORITY
+========================================== */
 
 .high{
     background:#fee2e2;
+
     color:#dc2626;
+
     padding:6px 14px;
+
     border-radius:20px;
+
     font-weight:600;
 }
 
 .medium{
     background:#fef3c7;
+
     color:#d97706;
+
     padding:6px 14px;
+
     border-radius:20px;
+
     font-weight:600;
 }
 
 .low{
     background:#dcfce7;
+
     color:#15803d;
+
     padding:6px 14px;
+
     border-radius:20px;
+
     font-weight:600;
 }
 
-/* Status */
+
+/* ==========================================
+   STATUS
+========================================== */
 
 .pending{
     background:#fef3c7;
+
     color:#92400e;
+
     padding:6px 14px;
+
     border-radius:20px;
+
     font-weight:600;
 }
 
 .progress{
     background:#dbeafe;
+
     color:#1d4ed8;
+
     padding:6px 14px;
+
     border-radius:20px;
+
     font-weight:600;
 }
 
 .resolved{
     background:#dcfce7;
+
     color:#15803d;
+
     padding:6px 14px;
+
     border-radius:20px;
+
     font-weight:600;
 }
 
-/* Open Button */
+
+/* ==========================================
+   OPEN BUTTON
+========================================== */
 
 .open-btn{
+
     display:flex;
+
     align-items:center;
+
     gap:8px;
+
     border:none;
+
     background:#2563eb;
+
     color:white;
+
     padding:10px 18px;
+
     border-radius:10px;
+
     cursor:pointer;
+
     font-weight:600;
+
     transition:.3s;
 }
 
 .open-btn:hover{
+
     background:#1d4ed8;
+
     transform:translateY(-2px);
 }
 
-/* Empty State */
+
+/* ==========================================
+   EMPTY STATE
+========================================== */
 
 .empty-state{
+
     background:white;
+
     border-radius:18px;
+
     padding:70px;
+
     text-align:center;
-    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+    box-shadow:
+            0 10px 30px
+            rgba(0,0,0,.08);
 }
 
 .empty-state svg{
+
     font-size:70px;
+
     color:#2563eb;
+
     margin-bottom:20px;
 }
 
 .empty-state h2{
+
     margin-bottom:10px;
+
     color:#0f172a;
 }
 
 .empty-state p{
+
     color:#64748b;
 }
 
-/* Responsive */
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
 
 @media(max-width:900px){
+
     .complaints-header{
+
         flex-direction:column;
+
         align-items:flex-start;
+
         gap:20px;
     }
 
+
     .complaints-toolbar{
+
         flex-direction:column;
+
         align-items:stretch;
     }
 
+
     .search-box{
+
         width:100%;
     }
 
+
+    .filter-fields{
+
+        grid-template-columns:1fr;
+    }
+
+
+    .filter-actions{
+
+        justify-content:stretch;
+
+        flex-direction:column;
+    }
+
+
+    .clear-filter-btn,
+    .apply-filter-btn{
+
+        width:100%;
+    }
+
+
     .complaints-table{
+
         overflow-x:auto;
     }
 }

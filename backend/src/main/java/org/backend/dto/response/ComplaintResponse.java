@@ -17,6 +17,24 @@ public class ComplaintResponse {
 
     private String status;
 
+
+    // ==========================================
+    // CITIZEN
+    // ==========================================
+
+    private String citizenName;
+
+    private Long citizenId;
+
+    private String email;
+
+    private String phoneNumber;
+
+
+    // ==========================================
+    // LOCATION
+    // ==========================================
+
     private String addressLine;
 
     private String area;
@@ -27,6 +45,11 @@ public class ComplaintResponse {
 
     private String pincode;
 
+
+    // ==========================================
+    // DATES
+    // ==========================================
+
     private LocalDateTime submittedAt;
 
     private LocalDate estimatedCompletionDate;
@@ -36,9 +59,34 @@ public class ComplaintResponse {
     private LocalDateTime closedAt;
 
 
+    // ==========================================
+    // ASSIGNMENT
+    // ==========================================
+
+    private Long assignedOfficerId;
+
+    private String assignedOfficerName;
+
+    private String assignedOfficerEmail;
+
+    private String assignedByName;
+
+    private LocalDateTime assignedAt;
+
+    private String assignmentRemarks;
+
+
+    // ==========================================
+    // CONSTRUCTOR
+    // ==========================================
+
     public ComplaintResponse() {
     }
 
+
+    // ==========================================
+    // COMPLAINT
+    // ==========================================
 
     public Long getComplaintId() {
         return complaintId;
@@ -48,6 +96,7 @@ public class ComplaintResponse {
         this.complaintId = complaintId;
     }
 
+
     public String getTitle() {
         return title;
     }
@@ -55,6 +104,7 @@ public class ComplaintResponse {
     public void setTitle(String title) {
         this.title = title;
     }
+
 
     public String getDescription() {
         return description;
@@ -64,6 +114,7 @@ public class ComplaintResponse {
         this.description = description;
     }
 
+
     public String getCategory() {
         return category;
     }
@@ -71,6 +122,7 @@ public class ComplaintResponse {
     public void setCategory(String category) {
         this.category = category;
     }
+
 
     public String getPriority() {
         return priority;
@@ -80,6 +132,7 @@ public class ComplaintResponse {
         this.priority = priority;
     }
 
+
     public String getStatus() {
         return status;
     }
@@ -87,6 +140,51 @@ public class ComplaintResponse {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
+    // ==========================================
+    // CITIZEN
+    // ==========================================
+
+    public String getCitizenName() {
+        return citizenName;
+    }
+
+    public void setCitizenName(String citizenName) {
+        this.citizenName = citizenName;
+    }
+
+
+    public Long getCitizenId() {
+        return citizenId;
+    }
+
+    public void setCitizenId(Long citizenId) {
+        this.citizenId = citizenId;
+    }
+
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+
+    // ==========================================
+    // LOCATION
+    // ==========================================
 
     public String getAddressLine() {
         return addressLine;
@@ -96,6 +194,7 @@ public class ComplaintResponse {
         this.addressLine = addressLine;
     }
 
+
     public String getArea() {
         return area;
     }
@@ -103,6 +202,7 @@ public class ComplaintResponse {
     public void setArea(String area) {
         this.area = area;
     }
+
 
     public String getCity() {
         return city;
@@ -112,6 +212,7 @@ public class ComplaintResponse {
         this.city = city;
     }
 
+
     public String getState() {
         return state;
     }
@@ -119,6 +220,7 @@ public class ComplaintResponse {
     public void setState(String state) {
         this.state = state;
     }
+
 
     public String getPincode() {
         return pincode;
@@ -128,36 +230,129 @@ public class ComplaintResponse {
         this.pincode = pincode;
     }
 
+
+    // ==========================================
+    // DATES
+    // ==========================================
+
     public LocalDateTime getSubmittedAt() {
         return submittedAt;
     }
 
-    public void setSubmittedAt(LocalDateTime submittedAt) {
+    public void setSubmittedAt(
+            LocalDateTime submittedAt
+    ) {
         this.submittedAt = submittedAt;
     }
+
 
     public LocalDate getEstimatedCompletionDate() {
         return estimatedCompletionDate;
     }
 
-    public void setEstimatedCompletionDate(LocalDate estimatedCompletionDate) {
-        this.estimatedCompletionDate = estimatedCompletionDate;
+    public void setEstimatedCompletionDate(
+            LocalDate estimatedCompletionDate
+    ) {
+        this.estimatedCompletionDate =
+                estimatedCompletionDate;
     }
+
 
     public LocalDateTime getResolvedAt() {
         return resolvedAt;
     }
 
-    public void setResolvedAt(LocalDateTime resolvedAt) {
+    public void setResolvedAt(
+            LocalDateTime resolvedAt
+    ) {
         this.resolvedAt = resolvedAt;
     }
+
 
     public LocalDateTime getClosedAt() {
         return closedAt;
     }
 
-    public void setClosedAt(LocalDateTime closedAt) {
+    public void setClosedAt(
+            LocalDateTime closedAt
+    ) {
         this.closedAt = closedAt;
+    }
+
+
+    // ==========================================
+    // ASSIGNMENT
+    // ==========================================
+
+    public Long getAssignedOfficerId() {
+        return assignedOfficerId;
+    }
+
+    public void setAssignedOfficerId(
+            Long assignedOfficerId
+    ) {
+        this.assignedOfficerId =
+                assignedOfficerId;
+    }
+
+
+    public String getAssignedOfficerName() {
+        return assignedOfficerName;
+    }
+
+    public void setAssignedOfficerName(
+            String assignedOfficerName
+    ) {
+        this.assignedOfficerName =
+                assignedOfficerName;
+    }
+
+
+    public String getAssignedOfficerEmail() {
+        return assignedOfficerEmail;
+    }
+
+    public void setAssignedOfficerEmail(
+            String assignedOfficerEmail
+    ) {
+        this.assignedOfficerEmail =
+                assignedOfficerEmail;
+    }
+
+
+    public String getAssignedByName() {
+        return assignedByName;
+    }
+
+    public void setAssignedByName(
+            String assignedByName
+    ) {
+        this.assignedByName =
+                assignedByName;
+    }
+
+
+    public LocalDateTime getAssignedAt() {
+        return assignedAt;
+    }
+
+    public void setAssignedAt(
+            LocalDateTime assignedAt
+    ) {
+        this.assignedAt =
+                assignedAt;
+    }
+
+
+    public String getAssignmentRemarks() {
+        return assignmentRemarks;
+    }
+
+    public void setAssignmentRemarks(
+            String assignmentRemarks
+    ) {
+        this.assignmentRemarks =
+                assignmentRemarks;
     }
 
 }

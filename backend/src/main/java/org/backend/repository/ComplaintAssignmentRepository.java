@@ -1,6 +1,7 @@
 package org.backend.repository;
 
 import org.backend.entity.ComplaintAssignment;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -10,31 +11,56 @@ public interface ComplaintAssignmentRepository
         extends JpaRepository<ComplaintAssignment, Long> {
 
 
-    // Get complete assignment history of a complaint
+    // ==========================================
+    // GET COMPLETE ASSIGNMENT HISTORY OF COMPLAINT
+    // ==========================================
+
     List<ComplaintAssignment>
     findByComplaintComplaintId(
             Long complaintId
     );
 
 
-    // Get complete assignment history of an officer
+    // ==========================================
+    // GET COMPLETE ASSIGNMENT HISTORY OF OFFICER
+    // ==========================================
+
     List<ComplaintAssignment>
     findByOfficerOfficerId(
             Long officerId
     );
 
 
-    // Get current active assignment of a complaint
+    // ==========================================
+    // GET CURRENT ACTIVE ASSIGNMENT OF COMPLAINT
+    // ==========================================
+
     Optional<ComplaintAssignment>
     findByComplaintComplaintIdAndIsCurrentTrue(
             Long complaintId
     );
 
 
-    // Get all currently assigned complaints of an officer
+    // ==========================================
+    // GET ALL CURRENT ASSIGNMENTS OF OFFICER
+    // ==========================================
+
     List<ComplaintAssignment>
     findByOfficerOfficerIdAndIsCurrentTrue(
             Long officerId
     );
 
+
+    // ==========================================
+    // GET OFFICER WORKLOAD
+    //
+    // Only:
+    // 1. Current assignment
+    // 2. Complaint status = IN_PROGRESS
+    // ==========================================
+
+    long countByOfficerOfficerIdAndIsCurrentTrueAndComplaintStatusStatusName(
+            Long officerId,
+            String statusName
+    );
 }
