@@ -5,7 +5,10 @@ import org.backend.dto.response.ComplaintResponse;
 import org.backend.dto.response.DashboardResponse;
 import org.backend.dto.response.UserResponse;
 import org.backend.service.AdminService;
+
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,21 +17,40 @@ import java.util.List;
 @RequestMapping("/api/admins")
 public class AdminController {
 
-
     private final AdminService adminService;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(
+            AdminService adminService
+    ) {
         this.adminService = adminService;
     }
 
 
-    @GetMapping("/{adminId}/profile")
-    public ResponseEntity<ApiResponse<UserResponse>> getAdminProfile(
-            @PathVariable Long adminId
+    // ==========================================
+    // GET LOGGED-IN ADMIN PROFILE
+    // ==========================================
+
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse<UserResponse>>
+    getAdminProfile(
+            Authentication authentication
     ) {
 
+        /*
+         * Authentication#getName()
+         * returns the username from Spring Security.
+         *
+         * In our application the username is the
+         * user's email address.
+         */
+
+        String email =
+                authentication.getName();
+
         UserResponse response =
-                adminService.getAdminProfile(adminId);
+                adminService.getAdminProfileByEmail(
+                        email
+                );
 
         ApiResponse<UserResponse> apiResponse =
                 new ApiResponse<>(
@@ -37,41 +59,63 @@ public class AdminController {
                         response
                 );
 
-        return ResponseEntity.ok(apiResponse);
+        return ResponseEntity.ok(
+                apiResponse
+        );
     }
 
 
+    // ==========================================
+    // GET ALL COMPLAINTS
+    // ==========================================
+
     @GetMapping("/complaints")
-    public ResponseEntity<ApiResponse<List<ComplaintResponse>>>
+    public ResponseEntity<
+            ApiResponse<List<ComplaintResponse>>
+            >
     getAllComplaints() {
 
         List<ComplaintResponse> complaints =
                 adminService.getAllComplaints();
 
-        ApiResponse<List<ComplaintResponse>> apiResponse =
+        ApiResponse<List<ComplaintResponse>>
+                apiResponse =
                 new ApiResponse<>(
                         true,
                         "All complaints fetched successfully",
                         complaints
                 );
 
-        return ResponseEntity.ok(apiResponse);
+        return ResponseEntity.ok(
+                apiResponse
+        );
     }
+
+
+    // ==========================================
+    // ADMIN DASHBOARD
+    // ==========================================
+
     @GetMapping("/dashboard")
-    public ResponseEntity<ApiResponse<DashboardResponse>>
+    public ResponseEntity<
+            ApiResponse<DashboardResponse>
+            >
     getDashboardStatistics() {
+
         DashboardResponse response =
                 adminService.getDashboardStatistics();
 
-        ApiResponse<DashboardResponse> apiResponse =
+        ApiResponse<DashboardResponse>
+                apiResponse =
                 new ApiResponse<>(
                         true,
                         "Dashboard statistics fetched successfully",
                         response
                 );
 
-        return ResponseEntity.ok(apiResponse);
+        return ResponseEntity.ok(
+                apiResponse
+        );
     }
-
 
 }
