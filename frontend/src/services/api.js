@@ -7,7 +7,10 @@ const api = axios.create({
     },
 });
 
-// Automatically JWT token attach karega
+// ==========================================
+// JWT INTERCEPTOR
+// ==========================================
+
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");
@@ -18,9 +21,17 @@ api.interceptors.request.use(
 
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
+
+
+// ==========================================
+// ADMIN PROFILE
+// ==========================================
+
+export const getAdminProfile = async () => {
+    return await api.get("/admins/profile");
+};
+
 
 export default api;
