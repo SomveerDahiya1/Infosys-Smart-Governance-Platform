@@ -4,14 +4,16 @@ import {
     FaUser,
     FaEnvelope,
     FaPhone,
-    FaMapMarkerAlt,
     FaCamera,
-    FaSave,
+    FaSave
 } from "react-icons/fa";
 
 import "../../styles/admin/AdminProfile.css";
 
-import { getAdminProfile } from "../../services/api";
+import {
+    getAdminProfile,
+    updateAdminProfile
+} from "../../services/api";
 
 
 export default function AdminProfile() {
@@ -23,12 +25,13 @@ export default function AdminProfile() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
-    const [address, setAddress] = useState("");
-
-    const [role, setRole] = useState("");
+    const [role, setRole] = useState("ADMIN");
 
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
 
     // ==========================================
@@ -37,141 +40,284 @@ export default function AdminProfile() {
 
     useEffect(() => {
 
-        const loadProfile = async () => {
-
-            try {
-
-                setLoading(true);
-                setError("");
-
-                const response =
-                    await getAdminProfile();
-
-                console.log(
-                    "ADMIN PROFILE RESPONSE:",
-                    response.data
-                );
-
-
-                const profile =
-                    response.data?.data;
-
-
-                if (!profile) {
-
-                    throw new Error(
-                        "Profile data was not received from server."
-                    );
-                }
-
-
-                // ==========================================
-                // NAME
-                // ==========================================
-
-                const firstName =
-                    profile.firstName || "";
-
-                const lastName =
-                    profile.lastName || "";
-
-
-                const fullName =
-                    `${firstName} ${lastName}`.trim();
-
-
-                setName(
-                    fullName || "Admin"
-                );
-
-
-                // ==========================================
-                // EMAIL
-                // ==========================================
-
-                setEmail(
-                    profile.email || ""
-                );
-
-
-                // ==========================================
-                // PHONE
-                // ==========================================
-
-                setPhone(
-                    profile.phoneNumber || ""
-                );
-
-
-                // ==========================================
-                // ROLE
-                // ==========================================
-
-                setRole(
-                    profile.role || "ADMIN"
-                );
-
-
-                // ==========================================
-                // ADDRESS
-                // ==========================================
-
-                setAddress(
-                    profile.address || ""
-                );
-
-
-            } catch (err) {
-
-                console.error(
-                    "ADMIN PROFILE ERROR:",
-                    err
-                );
-
-
-                if (err.response) {
-
-                    console.error(
-                        "STATUS:",
-                        err.response.status
-                    );
-
-                    console.error(
-                        "RESPONSE:",
-                        err.response.data
-                    );
-
-
-                    setError(
-                        err.response.data?.message ||
-                        "Unable to load profile."
-                    );
-
-                } else if (err.request) {
-
-                    setError(
-                        "Backend server is not reachable."
-                    );
-
-                } else {
-
-                    setError(
-                        err.message ||
-                        "Unable to load profile."
-                    );
-                }
-
-            } finally {
-
-                setLoading(false);
-
-            }
-        };
-
-
         loadProfile();
 
     }, []);
+
+
+    const loadProfile = async () => {
+
+        try {
+
+            setLoading(true);
+            setError("");
+
+            const response =
+                await getAdminProfile();
+
+            console.log(
+                "ADMIN PROFILE:",
+                response.data
+            );
+
+
+            const profile =
+                response.data?.data;
+
+
+            if (!profile) {
+
+                throw new Error(
+                    "Profile data not received from server."
+                );
+            }
+
+
+            // ==========================================
+            // NAME
+            // ==========================================
+
+            const firstName =
+                profile.firstName || "";
+
+            const lastName =
+                profile.lastName || "";
+
+
+            setName(
+                `${firstName} ${lastName}`.trim()
+            );
+
+
+            // ==========================================
+            // EMAIL
+            // ==========================================
+
+            setEmail(
+                profile.email || ""
+            );
+
+
+            // ==========================================
+            // PHONE
+            // ==========================================
+
+            setPhone(
+                profile.phoneNumber || ""
+            );
+
+
+            // ==========================================
+            // ROLE
+            // ==========================================
+
+            setRole(
+                profile.role || "ADMIN"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "LOAD PROFILE ERROR:",
+                error
+            );
+
+
+            if (error.response) {
+
+                setError(
+                    error.response.data?.message ||
+                    "Unable to load profile."
+                );
+
+            } else if (error.request) {
+
+                setError(
+                    "Unable to connect to backend server."
+                );
+
+            } else {
+
+                setError(
+                    error.message ||
+                    "Unable to load profile."
+                );
+            }
+
+        } finally {
+
+            setLoading(false);
+
+        }
+    };
+
+
+    // ==========================================
+    // SAVE PROFILE
+    // ==========================================
+
+    const handleSave = async () => {
+
+        try {
+
+            setSaving(true);
+            setError("");
+            setSuccess("");
+
+
+            // ------------------------------------------
+            // Validate name
+            // ------------------------------------------
+
+            const trimmedName =
+                name.trim();
+
+
+            if (!trimmedName) {
+
+                setError(
+                    "Name cannot be empty."
+                );
+
+                return;
+            }
+
+
+            // ------------------------------------------
+            // Split full name
+            // ------------------------------------------
+
+            const nameParts =
+                trimmedName.split(/\s+/);
+
+
+            const firstName =
+                nameParts[0];
+
+
+            const lastName =
+                nameParts.length > 1
+                    ? nameParts.slice(1).join(" ")
+                    : "";
+
+
+            // ------------------------------------------
+            // Request body
+            // ------------------------------------------
+
+            const profileData = {
+
+                firstName: firstName,
+
+                lastName: lastName,
+
+                phoneNumber:
+                    phone.trim()
+
+            };
+
+
+            console.log(
+                "UPDATING ADMIN PROFILE:",
+                profileData
+            );
+
+
+            // ------------------------------------------
+            // API CALL
+            // ------------------------------------------
+
+            const response =
+                await updateAdminProfile(
+                    profileData
+                );
+
+
+            console.log(
+                "UPDATE PROFILE RESPONSE:",
+                response.data
+            );
+
+
+            // ------------------------------------------
+            // Update UI
+            // ------------------------------------------
+
+            const updatedProfile =
+                response.data?.data;
+
+
+            if (updatedProfile) {
+
+                const updatedFirstName =
+                    updatedProfile.firstName || "";
+
+                const updatedLastName =
+                    updatedProfile.lastName || "";
+
+
+                setName(
+                    `${updatedFirstName} ${updatedLastName}`.trim()
+                );
+
+
+                setEmail(
+                    updatedProfile.email || email
+                );
+
+
+                setPhone(
+                    updatedProfile.phoneNumber || ""
+                );
+
+
+                setRole(
+                    updatedProfile.role || role
+                );
+            }
+
+
+            setSuccess(
+                "Profile updated successfully."
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "SAVE PROFILE ERROR:",
+                error
+            );
+
+
+            if (error.response) {
+
+                setError(
+                    error.response.data?.message ||
+                    "Failed to update profile."
+                );
+
+            } else if (error.request) {
+
+                setError(
+                    "Unable to connect to backend server."
+                );
+
+            } else {
+
+                setError(
+                    error.message ||
+                    "Failed to update profile."
+                );
+            }
+
+        } finally {
+
+            setSaving(false);
+
+        }
+    };
 
 
     // ==========================================
@@ -201,11 +347,7 @@ export default function AdminProfile() {
                     <div className="profile-card">
 
                         <div className="profile-image">
-
-                            <div className="profile-loading">
-                                Loading...
-                            </div>
-
+                            Loading...
                         </div>
 
                         <h2>
@@ -229,7 +371,7 @@ export default function AdminProfile() {
     // ERROR
     // ==========================================
 
-    if (error) {
+    if (error && !name) {
 
         return (
             <div className="profile-page">
@@ -253,18 +395,12 @@ export default function AdminProfile() {
                     <div className="profile-card">
 
                         <div className="profile-image">
-
-                            <div className="profile-error">
-                                !
-                            </div>
-
+                            !
                         </div>
-
 
                         <h2>
                             Unable to load profile
                         </h2>
-
 
                         <p>
                             {error}
@@ -315,10 +451,36 @@ export default function AdminProfile() {
             </div>
 
 
+            {/* ==========================================
+                SUCCESS MESSAGE
+            ========================================== */}
+
+            {success && (
+
+                <div className="profile-success">
+                    {success}
+                </div>
+
+            )}
+
+
+            {/* ==========================================
+                ERROR MESSAGE
+            ========================================== */}
+
+            {error && (
+
+                <div className="profile-error-message">
+                    {error}
+                </div>
+
+            )}
+
+
             <div className="profile-container">
 
                 {/* ==========================================
-                    PROFILE CARD
+                    LEFT PROFILE CARD
                 ========================================== */}
 
                 <div className="profile-card">
@@ -327,8 +489,9 @@ export default function AdminProfile() {
 
                         <img
                             src={avatarUrl}
-                            alt={name}
+                            alt={name || "Admin"}
                         />
+
 
                         <button
                             type="button"
@@ -341,7 +504,7 @@ export default function AdminProfile() {
 
 
                     <h2>
-                        {name}
+                        {name || "Admin"}
                     </h2>
 
 
@@ -353,12 +516,14 @@ export default function AdminProfile() {
 
 
                 {/* ==========================================
-                    PROFILE FORM
+                    RIGHT PROFILE FORM
                 ========================================== */}
 
                 <div className="profile-form">
 
-                    {/* NAME */}
+                    {/* ==========================================
+                        FULL NAME
+                    ========================================== */}
 
                     <div className="form-group">
 
@@ -374,17 +539,24 @@ export default function AdminProfile() {
                         <input
                             type="text"
                             value={name}
-                            onChange={(e) =>
+                            onChange={(e) => {
+
                                 setName(
                                     e.target.value
-                                )
-                            }
+                                );
+
+                                setSuccess("");
+
+                            }}
+                            disabled={saving}
                         />
 
                     </div>
 
 
-                    {/* EMAIL */}
+                    {/* ==========================================
+                        EMAIL
+                    ========================================== */}
 
                     <div className="form-group">
 
@@ -400,17 +572,23 @@ export default function AdminProfile() {
                         <input
                             type="email"
                             value={email}
-                            onChange={(e) =>
-                                setEmail(
-                                    e.target.value
-                                )
-                            }
+                            readOnly
+                            title="Email is linked with your login account"
                         />
+
+
+                        <small>
+                            Email is linked with your
+                            login account and cannot
+                            be changed here.
+                        </small>
 
                     </div>
 
 
-                    {/* PHONE */}
+                    {/* ==========================================
+                        PHONE
+                    ========================================== */}
 
                     <div className="form-group">
 
@@ -426,53 +604,38 @@ export default function AdminProfile() {
                         <input
                             type="text"
                             value={phone}
-                            onChange={(e) =>
+                            onChange={(e) => {
+
                                 setPhone(
                                     e.target.value
-                                )
-                            }
+                                );
+
+                                setSuccess("");
+
+                            }}
+                            disabled={saving}
                         />
 
                     </div>
 
 
-                    {/* ADDRESS */}
-
-                    <div className="form-group">
-
-                        <label>
-
-                            <FaMapMarkerAlt />
-
-                            Address
-
-                        </label>
-
-
-                        <textarea
-                            rows="4"
-                            value={address}
-                            onChange={(e) =>
-                                setAddress(
-                                    e.target.value
-                                )
-                            }
-                            placeholder="Address not available"
-                        />
-
-                    </div>
-
-
-                    {/* SAVE */}
+                    {/* ==========================================
+                        SAVE BUTTON
+                    ========================================== */}
 
                     <button
                         type="button"
                         className="save-btn"
+                        onClick={handleSave}
+                        disabled={saving}
                     >
 
                         <FaSave />
 
-                        Save Changes
+                        {saving
+                            ? "Saving..."
+                            : "Save Changes"
+                        }
 
                     </button>
 

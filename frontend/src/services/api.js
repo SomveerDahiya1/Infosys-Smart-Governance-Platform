@@ -13,6 +13,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
     (config) => {
+
         const token = localStorage.getItem("token");
 
         if (token) {
@@ -21,16 +22,30 @@ api.interceptors.request.use(
 
         return config;
     },
-    (error) => Promise.reject(error)
+    (error) => {
+        return Promise.reject(error);
+    }
 );
 
 
 // ==========================================
-// ADMIN PROFILE
+// ADMIN PROFILE - GET
 // ==========================================
 
-export const getAdminProfile = async () => {
-    return await api.get("/admins/profile");
+export const getAdminProfile = () => {
+    return api.get("/admins/profile");
+};
+
+
+// ==========================================
+// ADMIN PROFILE - UPDATE
+// ==========================================
+
+export const updateAdminProfile = (profileData) => {
+    return api.put(
+        "/admins/profile",
+        profileData
+    );
 };
 
 
