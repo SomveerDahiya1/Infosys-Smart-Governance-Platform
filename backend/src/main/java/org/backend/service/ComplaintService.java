@@ -51,7 +51,7 @@ public class ComplaintService {
     private final UserRepository userRepository;
     private final ComplaintAssignmentRepository assignmentRepository;
     private final ComplaintStatusHistoryRepository statusHistoryRepository;
-
+    private final NotificationService notificationService;
 
     public ComplaintService(
             ComplaintRepository complaintRepository,
@@ -63,7 +63,8 @@ public class ComplaintService {
             OfficerRepository officerRepository,
             UserRepository userRepository,
             ComplaintAssignmentRepository assignmentRepository,
-            ComplaintStatusHistoryRepository statusHistoryRepository
+            ComplaintStatusHistoryRepository statusHistoryRepository,
+            NotificationService notificationService
     ) {
 
         this.complaintRepository = complaintRepository;
@@ -76,6 +77,7 @@ public class ComplaintService {
         this.userRepository = userRepository;
         this.assignmentRepository = assignmentRepository;
         this.statusHistoryRepository = statusHistoryRepository;
+        this.notificationService = notificationService;
     }
 
 
@@ -477,7 +479,6 @@ public class ComplaintService {
                                 )
                         );
 
-
         User changedBy =
                 userRepository
                         .findById(userId)
@@ -638,11 +639,19 @@ public class ComplaintService {
         }
 
 
+        // ==========================================
+        // SAVE COMPLAINT
+        // ==========================================
+
         complaint =
                 complaintRepository.save(
                         complaint
                 );
 
+
+        // ==========================================
+        // GET CURRENT ASSIGNMENT
+        // ==========================================
 
         ComplaintAssignment assignment =
                 assignmentRepository
@@ -652,13 +661,79 @@ public class ComplaintService {
                         .orElse(null);
 
 
+        // ==========================================
+        // ADMIN NOTIFICATION
+        // ==========================================
+
+        if (request.getStatusId() != null &&
+                assignment != null &&
+                assignment.getAssignedBy() != null) {
+
+            String status =
+                    complaint.getStatus().getStatusName();
+
+            /*
+             * Only notify the admin when the assigned
+             * officer resolves or rejects the complaint.
+             */
+
+            if ("RESOLVED".equals(status) ||
+                    "REJECTED".equals(status)) {
+
+                /*
+                 * Do not create notification if the admin
+                 * themselves changed the status.
+                 */
+
+                if (!assignment.getAssignedBy()
+                        .getUserId()
+                        .equals(userId)) {
+
+                    String title;
+                    String message;
+
+                    if ("RESOLVED".equals(status)) {
+
+                        title =
+                                "Complaint Resolved";
+
+                        message =
+                                "Complaint #" +
+                                        complaint.getComplaintId() +
+                                        " assigned by you has been resolved by the assigned officer.";
+
+                    } else {
+
+                        title =
+                                "Complaint Rejected";
+
+                        message =
+                                "Complaint #" +
+                                        complaint.getComplaintId() +
+                                        " assigned by you has been rejected by the assigned officer.";
+                    }
+
+
+                    notificationService.createComplaintNotification(
+                            assignment.getAssignedBy(),
+                            complaint,
+                            title,
+                            message
+                    );
+                }
+            }
+        }
+
+
+        // ==========================================
+        // RETURN UPDATED COMPLAINT
+        // ==========================================
+
         return ComplaintMapper.toComplaintResponse(
                 complaint,
                 assignment
         );
     }
-
-
     // ==========================================
     // ASSIGN COMPLAINT TO OFFICER
     // ==========================================

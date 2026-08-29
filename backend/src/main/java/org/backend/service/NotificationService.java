@@ -9,7 +9,9 @@ import org.backend.repository.NotificationRepository;
 import org.backend.repository.NotificationTypeRepository;
 import org.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,12 +27,15 @@ public class NotificationService {
             UserRepository userRepository
     ) {
         this.notificationRepository = notificationRepository;
-        this.notificationTypeRepository =
-                notificationTypeRepository;
+        this.notificationTypeRepository = notificationTypeRepository;
         this.userRepository = userRepository;
     }
 
+    // ==========================================
+    // CREATE COMPLAINT NOTIFICATION
+    // ==========================================
 
+    @Transactional
     public Notification createComplaintNotification(
             User user,
             Complaint complaint,
@@ -43,7 +48,7 @@ public class NotificationService {
                         .findByTypeName("COMPLAINT_UPDATE")
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
-                                        "Notification type not found"
+                                        "Notification type COMPLAINT_UPDATE not found"
                                 )
                         );
 
@@ -55,12 +60,22 @@ public class NotificationService {
         notification.setComplaint(complaint);
         notification.setTitle(title);
         notification.setMessage(message);
+
         notification.setIsRead(false);
+
+        // IMPORTANT
+        notification.setCreatedAt(
+                LocalDateTime.now()
+        );
 
         return notificationRepository.save(notification);
     }
 
+    // ==========================================
+    // GET USER NOTIFICATIONS
+    // ==========================================
 
+    @Transactional(readOnly = true)
     public List<Notification> getUserNotifications(
             Long userId
     ) {
@@ -75,7 +90,30 @@ public class NotificationService {
                 .findByUserUserIdOrderByCreatedAtDesc(userId);
     }
 
+    // ==========================================
+    // GET UNREAD NOTIFICATIONS
+    // ==========================================
 
+    @Transactional(readOnly = true)
+    public List<Notification> getUnreadNotifications(
+            Long userId
+    ) {
+
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException(
+                    "User not found"
+            );
+        }
+
+        return notificationRepository
+                .findByUserUserIdAndIsReadFalse(userId);
+    }
+
+    // ==========================================
+    // MARK AS READ
+    // ==========================================
+
+    @Transactional
     public Notification markAsRead(
             Long notificationId
     ) {
@@ -91,7 +129,12 @@ public class NotificationService {
 
         notification.setIsRead(true);
 
-        return notificationRepository.save(notification);
-    }
+        notification.setReadAt(
+                LocalDateTime.now()
+        );
 
+        return notificationRepository.save(
+                notification
+        );
+    }
 }

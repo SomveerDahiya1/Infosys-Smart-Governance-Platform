@@ -1,5 +1,7 @@
 package org.backend.service;
 
+import org.backend.dto.request.UpdateProfileRequest;
+
 import org.backend.dto.response.ComplaintResponse;
 import org.backend.dto.response.DashboardResponse;
 import org.backend.dto.response.UserResponse;
@@ -18,7 +20,10 @@ import org.backend.repository.UserRepository;
 
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+
 
 @Service
 public class AdminService {
@@ -55,22 +60,19 @@ public class AdminService {
             String email
     ) {
 
-        // ------------------------------------------
-        // Find logged-in user
-        // ------------------------------------------
-
         User user =
                 userRepository
                         .findByEmail(email)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
-                                        "User not found"
+                                        "User not found with email: "
+                                                + email
                                 )
                         );
 
 
         // ------------------------------------------
-        // Verify that this user is an ADMIN
+        // Verify ADMIN role
         // ------------------------------------------
 
         if (
@@ -81,39 +83,172 @@ public class AdminService {
         ) {
 
             throw new ResourceNotFoundException(
-                    "Admin profile not found"
+                    "Logged-in user is not an admin"
             );
         }
 
 
         // ------------------------------------------
-        // Verify Admin record exists
-        // ------------------------------------------
-
-        Admin admin =
-                adminRepository
-                        .findByUserUserId(
-                                user.getUserId()
-                        )
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Admin profile not found"
-                                )
-                        );
-
-
-        // ------------------------------------------
-        // Return UserResponse
+        // Return REAL user data
+        //
+        // We intentionally do NOT require an
+        // entry in admins table for profile loading.
         // ------------------------------------------
 
         return UserMapper.toUserResponse(
-                admin.getUser()
+                user
         );
     }
 
 
     // ==========================================
-    // EXISTING ADMIN PROFILE METHOD
+    // UPDATE LOGGED-IN ADMIN PROFILE
+    // ==========================================
+
+    @Transactional
+    public UserResponse updateAdminProfile(
+            String email,
+            UpdateProfileRequest request
+    ) {
+
+        // ------------------------------------------
+        // Find logged-in user
+        // ------------------------------------------
+
+        User user =
+                userRepository
+                        .findByEmail(email)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "User not found with email: "
+                                                + email
+                                )
+                        );
+
+
+        // ------------------------------------------
+        // Verify ADMIN role
+        // ------------------------------------------
+
+        if (
+                user.getRole() == null ||
+                        !"ADMIN".equalsIgnoreCase(
+                                user.getRole().getRoleName()
+                        )
+        ) {
+
+            throw new ResourceNotFoundException(
+                    "Logged-in user is not an admin"
+            );
+        }
+
+
+        // ------------------------------------------
+        // Validate first name
+        // ------------------------------------------
+
+        if (
+                request.getFirstName() == null ||
+                        request.getFirstName().trim().isEmpty()
+        ) {
+
+            throw new IllegalArgumentException(
+                    "First name cannot be empty"
+            );
+        }
+
+
+        // ------------------------------------------
+        // Update first name
+        // ------------------------------------------
+
+        user.setFirstName(
+                request.getFirstName().trim()
+        );
+
+
+        // ------------------------------------------
+        // Update last name
+        // ------------------------------------------
+
+        if (request.getLastName() != null) {
+
+            user.setLastName(
+                    request.getLastName().trim()
+            );
+
+        } else {
+
+            user.setLastName(null);
+        }
+
+
+        // ------------------------------------------
+        // Update phone number
+        // ------------------------------------------
+
+        String newPhone =
+                request.getPhoneNumber();
+
+
+        if (
+                newPhone != null &&
+                        !newPhone.trim().isEmpty()
+        ) {
+
+            newPhone =
+                    newPhone.trim();
+
+
+            // Check whether phone belongs to
+            // another user.
+
+            boolean phoneUsedByAnotherUser =
+                    userRepository
+                            .existsByPhoneNumberAndUserIdNot(
+                                    newPhone,
+                                    user.getUserId()
+                            );
+
+
+            if (phoneUsedByAnotherUser) {
+
+                throw new IllegalArgumentException(
+                        "Phone number is already registered with another user"
+                );
+            }
+
+
+            user.setPhoneNumber(
+                    newPhone
+            );
+
+        } else {
+
+            user.setPhoneNumber(null);
+        }
+
+
+        // ------------------------------------------
+        // Save to PostgreSQL
+        // ------------------------------------------
+
+        User updatedUser =
+                userRepository.save(user);
+
+
+        // ------------------------------------------
+        // Return updated data
+        // ------------------------------------------
+
+        return UserMapper.toUserResponse(
+                updatedUser
+        );
+    }
+
+
+    // ==========================================
+    // EXISTING ADMIN PROFILE BY ADMIN ID
     // ==========================================
 
     public UserResponse getAdminProfile(
@@ -125,12 +260,15 @@ public class AdminService {
                         .findById(adminId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
-                                        "Admin not found"
+                                        "Admin not found with id: "
+                                                + adminId
                                 )
                         );
 
+
         User user =
                 admin.getUser();
+
 
         return UserMapper.toUserResponse(
                 user
@@ -156,7 +294,7 @@ public class AdminService {
 
 
     // ==========================================
-    // ADMIN DASHBOARD STATISTICS
+    // ADMIN DASHBOARD
     // ==========================================
 
     public DashboardResponse
@@ -213,5 +351,4 @@ public class AdminService {
 
         return response;
     }
-
 }
