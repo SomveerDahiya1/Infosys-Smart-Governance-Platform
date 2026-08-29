@@ -1,6 +1,5 @@
 import {
     FaHome,
-    FaUsers,
     FaUserShield,
     FaClipboardList,
     FaChartBar,
@@ -9,64 +8,230 @@ import {
     FaUserCircle,
     FaSignOutAlt
 } from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom";
+
+import {
+    Link,
+    useLocation
+} from "react-router-dom";
+
+import { logout } from "../../services/authService";
+
 import "../../styles/admin/AdminSidebar.css";
+
+
 export default function AdminSidebar() {
+
     const location = useLocation();
+
+
     return (
+
         <aside className="sidebar">
+
+            {/* ==========================================
+                LOGO
+            ========================================== */}
+
             <div className="sidebar-logo">
-                <h2>🏛️ CivicPulse</h2>
-                <p>Admin Panel</p>
+
+                <h2>
+                    🏛️ CivicPulse
+                </h2>
+
+                <p>
+                    Admin Panel
+                </p>
+
             </div>
+
+
+            {/* ==========================================
+                NAVIGATION
+            ========================================== */}
+
             <ul>
-                <li className={location.pathname === "/admin/dashboard" ? "active" : ""}>
+
+                {/* DASHBOARD */}
+
+                <li
+                    className={
+                        location.pathname === "/admin/dashboard"
+                            ? "active"
+                            : ""
+                    }
+                >
+
                     <Link to="/admin/dashboard">
-                        <FaHome/>
-                        <span>Dashboard</span>
+
+                        <FaHome />
+
+                        <span>
+                            Dashboard
+                        </span>
+
                     </Link>
+
                 </li>
-                <li className={location.pathname === "/admin/officers" ? "active" : ""}>
+
+
+                {/* OFFICERS */}
+
+                <li
+                    className={
+                        location.pathname === "/admin/officers"
+                            ? "active"
+                            : ""
+                    }
+                >
+
                     <Link to="/admin/officers">
-                        <FaUserShield/>
-                        <span>Officers</span>
+
+                        <FaUserShield />
+
+                        <span>
+                            Officers
+                        </span>
+
                     </Link>
+
                 </li>
-                <li className={location.pathname === "/admin/complaints" ? "active" : ""}>
+
+
+                {/* COMPLAINTS */}
+
+                <li
+                    className={
+                        location.pathname === "/admin/complaints"
+                            ? "active"
+                            : ""
+                    }
+                >
+
                     <Link to="/admin/complaints">
-                        <FaClipboardList/>
-                        <span>Complaints</span>
+
+                        <FaClipboardList />
+
+                        <span>
+                            Complaints
+                        </span>
+
                     </Link>
+
                 </li>
-                <li className={location.pathname === "/admin/analytics" ? "active" : ""}>
+
+
+                {/* ANALYTICS */}
+
+                <li
+                    className={
+                        location.pathname === "/admin/analytics"
+                            ? "active"
+                            : ""
+                    }
+                >
+
                     <Link to="/admin/analytics">
-                        <FaChartBar/>
-                        <span>Analytics</span>
+
+                        <FaChartBar />
+
+                        <span>
+                            Analytics
+                        </span>
+
                     </Link>
+
                 </li>
-                <li className={location.pathname === "/admin/reports" ? "active" : ""}>
+
+
+                {/* REPORTS */}
+
+                <li
+                    className={
+                        location.pathname === "/admin/reports"
+                            ? "active"
+                            : ""
+                    }
+                >
+
                     <Link to="/admin/reports">
-                        <FaFileAlt/>
-                        <span>Reports</span>
+
+                        <FaFileAlt />
+
+                        <span>
+                            Reports
+                        </span>
+
                     </Link>
+
                 </li>
-                <li className={location.pathname === "/admin/notifications" ? "active" : ""}>
+
+
+                {/* NOTIFICATIONS */}
+
+                <li
+                    className={
+                        location.pathname === "/admin/notifications"
+                            ? "active"
+                            : ""
+                    }
+                >
+
                     <Link to="/admin/notifications">
-                        <FaBell/>
-                        <span>Notifications</span>
+
+                        <FaBell />
+
+                        <span>
+                            Notifications
+                        </span>
+
                     </Link>
+
                 </li>
-                <li className={location.pathname === "/admin/profile" ? "active" : ""}>
+
+
+                {/* PROFILE */}
+
+                <li
+                    className={
+                        location.pathname === "/admin/profile"
+                            ? "active"
+                            : ""
+                    }
+                >
+
                     <Link to="/admin/profile">
-                        <FaUserCircle/>
-                        <span>Profile</span>
+
+                        <FaUserCircle />
+
+                        <span>
+                            Profile
+                        </span>
+
                     </Link>
+
                 </li>
+
             </ul>
-            <div className="logout">
-                <FaSignOutAlt/>
-                <span>Logout</span>
-            </div>
+
+
+            {/* ==========================================
+                LOGOUT
+            ========================================== */}
+
+            <button
+                type="button"
+                className="logout"
+                onClick={logout}
+            >
+
+                <FaSignOutAlt />
+
+                <span>
+                    <b>Logout</b>
+                </span>
+
+            </button>
+
         </aside>
     );
 }
