@@ -53,6 +53,7 @@ public class ComplaintService {
     private final ComplaintStatusHistoryRepository statusHistoryRepository;
     private final NotificationService notificationService;
 
+
     public ComplaintService(
             ComplaintRepository complaintRepository,
             CitizenRepository citizenRepository,
@@ -167,11 +168,6 @@ public class ComplaintService {
                 )
         );
 
-        /*
-         * ASSIGNED status is no longer used after assigning.
-         * Assignment directly changes complaint status to
-         * IN_PROGRESS.
-         */
         response.setAssignedComplaints(
                 0L
         );
@@ -335,7 +331,6 @@ public class ComplaintService {
                                 )
                         );
 
-
         ComplaintCategory category =
                 categoryRepository
                         .findById(request.getCategoryId())
@@ -345,7 +340,6 @@ public class ComplaintService {
                                 )
                         );
 
-
         ComplaintPriority priority =
                 priorityRepository
                         .findById(request.getPriorityId())
@@ -354,7 +348,6 @@ public class ComplaintService {
                                         "Complaint priority not found"
                                 )
                         );
-
 
         ComplaintStatus status =
                 statusRepository
@@ -366,12 +359,7 @@ public class ComplaintService {
                         );
 
 
-        // ==========================================
-        // CREATE LOCATION
-        // ==========================================
-
-        Location location =
-                new Location();
+        Location location = new Location();
 
         location.setAddressLine(
                 request.getAddressLine()
@@ -402,37 +390,16 @@ public class ComplaintService {
         );
 
         location =
-                locationRepository.save(
-                        location
-                );
+                locationRepository.save(location);
 
 
-        // ==========================================
-        // CREATE COMPLAINT
-        // ==========================================
+        Complaint complaint = new Complaint();
 
-        Complaint complaint =
-                new Complaint();
-
-        complaint.setCitizen(
-                citizen
-        );
-
-        complaint.setCategory(
-                category
-        );
-
-        complaint.setPriority(
-                priority
-        );
-
-        complaint.setStatus(
-                status
-        );
-
-        complaint.setLocation(
-                location
-        );
+        complaint.setCitizen(citizen);
+        complaint.setCategory(category);
+        complaint.setPriority(priority);
+        complaint.setStatus(status);
+        complaint.setLocation(location);
 
         complaint.setTitle(
                 request.getTitle()
@@ -447,9 +414,7 @@ public class ComplaintService {
         );
 
         complaint =
-                complaintRepository.save(
-                        complaint
-                );
+                complaintRepository.save(complaint);
 
 
         return ComplaintMapper.toComplaintResponse(
@@ -479,6 +444,7 @@ public class ComplaintService {
                                 )
                         );
 
+
         User changedBy =
                 userRepository
                         .findById(userId)
@@ -489,9 +455,7 @@ public class ComplaintService {
                         );
 
 
-        // ==========================================
         // UPDATE TITLE
-        // ==========================================
 
         if (request.getTitle() != null) {
 
@@ -501,9 +465,7 @@ public class ComplaintService {
         }
 
 
-        // ==========================================
         // UPDATE DESCRIPTION
-        // ==========================================
 
         if (request.getDescription() != null) {
 
@@ -513,9 +475,7 @@ public class ComplaintService {
         }
 
 
-        // ==========================================
         // UPDATE STATUS
-        // ==========================================
 
         if (request.getStatusId() != null) {
 
@@ -539,9 +499,7 @@ public class ComplaintService {
             );
 
 
-            // ==========================================
             // STATUS HISTORY
-            // ==========================================
 
             ComplaintStatusHistory history =
                     new ComplaintStatusHistory();
@@ -575,9 +533,7 @@ public class ComplaintService {
             );
 
 
-            // ==========================================
             // RESOLVED TIME
-            // ==========================================
 
             if ("RESOLVED".equals(
                     newStatus.getStatusName()
@@ -589,9 +545,7 @@ public class ComplaintService {
             }
 
 
-            // ==========================================
             // CLOSED TIME
-            // ==========================================
 
             if ("CLOSED".equals(
                     newStatus.getStatusName()
@@ -604,9 +558,7 @@ public class ComplaintService {
         }
 
 
-        // ==========================================
         // UPDATE PRIORITY
-        // ==========================================
 
         if (request.getPriorityId() != null) {
 
@@ -627,9 +579,7 @@ public class ComplaintService {
         }
 
 
-        // ==========================================
         // UPDATE ESTIMATED COMPLETION DATE
-        // ==========================================
 
         if (request.getEstimatedCompletionDate() != null) {
 
@@ -639,9 +589,7 @@ public class ComplaintService {
         }
 
 
-        // ==========================================
         // SAVE COMPLAINT
-        // ==========================================
 
         complaint =
                 complaintRepository.save(
@@ -649,9 +597,7 @@ public class ComplaintService {
                 );
 
 
-        // ==========================================
         // GET CURRENT ASSIGNMENT
-        // ==========================================
 
         ComplaintAssignment assignment =
                 assignmentRepository
@@ -662,7 +608,7 @@ public class ComplaintService {
 
 
         // ==========================================
-        // ADMIN NOTIFICATION
+        // NOTIFY ONLY THE ADMIN WHO ASSIGNED IT
         // ==========================================
 
         if (request.getStatusId() != null &&
@@ -670,27 +616,35 @@ public class ComplaintService {
                 assignment.getAssignedBy() != null) {
 
             String status =
-                    complaint.getStatus().getStatusName();
+                    complaint.getStatus()
+                            .getStatusName();
+
 
             /*
-             * Only notify the admin when the assigned
-             * officer resolves or rejects the complaint.
+             * Admin notification only when officer
+             * performs the final action:
+             *
+             * RESOLVED
+             * REJECTED
              */
 
             if ("RESOLVED".equals(status) ||
                     "REJECTED".equals(status)) {
 
+
                 /*
-                 * Do not create notification if the admin
-                 * themselves changed the status.
+                 * Don't notify admin if admin themselves
+                 * changed the complaint status.
                  */
 
                 if (!assignment.getAssignedBy()
                         .getUserId()
                         .equals(userId)) {
 
+
                     String title;
                     String message;
+
 
                     if ("RESOLVED".equals(status)) {
 
@@ -700,7 +654,7 @@ public class ComplaintService {
                         message =
                                 "Complaint #" +
                                         complaint.getComplaintId() +
-                                        " assigned by you has been resolved by the assigned officer.";
+                                        " assigned by you has been resolved by the officer.";
 
                     } else {
 
@@ -710,30 +664,29 @@ public class ComplaintService {
                         message =
                                 "Complaint #" +
                                         complaint.getComplaintId() +
-                                        " assigned by you has been rejected by the assigned officer.";
+                                        " assigned by you has been rejected by the officer.";
                     }
 
 
-                    notificationService.createComplaintNotification(
-                            assignment.getAssignedBy(),
-                            complaint,
-                            title,
-                            message
-                    );
+                    notificationService
+                            .createComplaintNotification(
+                                    assignment.getAssignedBy(),
+                                    complaint,
+                                    title,
+                                    message
+                            );
                 }
             }
         }
 
-
-        // ==========================================
-        // RETURN UPDATED COMPLAINT
-        // ==========================================
 
         return ComplaintMapper.toComplaintResponse(
                 complaint,
                 assignment
         );
     }
+
+
     // ==========================================
     // ASSIGN COMPLAINT TO OFFICER
     // ==========================================
@@ -745,10 +698,6 @@ public class ComplaintService {
             AssignComplaintRequest request
     ) {
 
-        // ==========================================
-        // FIND COMPLAINT
-        // ==========================================
-
         Complaint complaint =
                 complaintRepository
                         .findById(complaintId)
@@ -758,10 +707,6 @@ public class ComplaintService {
                                 )
                         );
 
-
-        // ==========================================
-        // FIND OFFICER
-        // ==========================================
 
         Officer officer =
                 officerRepository
@@ -775,10 +720,6 @@ public class ComplaintService {
                         );
 
 
-        // ==========================================
-        // FIND ADMIN
-        // ==========================================
-
         User assignedBy =
                 userRepository
                         .findById(
@@ -791,9 +732,7 @@ public class ComplaintService {
                         );
 
 
-        // ==========================================
         // CLOSE PREVIOUS ASSIGNMENT
-        // ==========================================
 
         ComplaintAssignment currentAssignment =
                 assignmentRepository
@@ -805,9 +744,7 @@ public class ComplaintService {
 
         if (currentAssignment != null) {
 
-            currentAssignment.setIsCurrent(
-                    false
-            );
+            currentAssignment.setIsCurrent(false);
 
             currentAssignment.setUnassignedAt(
                     LocalDateTime.now()
@@ -819,9 +756,7 @@ public class ComplaintService {
         }
 
 
-        // ==========================================
         // CREATE NEW ASSIGNMENT
-        // ==========================================
 
         ComplaintAssignment assignment =
                 new ComplaintAssignment();
@@ -856,13 +791,13 @@ public class ComplaintService {
                 );
 
 
-        // ==========================================
         // CHANGE STATUS TO IN_PROGRESS
-        // ==========================================
 
         ComplaintStatus assignedStatus =
                 statusRepository
-                        .findByStatusName("IN_PROGRESS")
+                        .findByStatusName(
+                                "IN_PROGRESS"
+                        )
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "IN_PROGRESS status not found"
@@ -878,16 +813,13 @@ public class ComplaintService {
                 assignedStatus
         );
 
-
         complaint =
                 complaintRepository.save(
                         complaint
                 );
 
 
-        // ==========================================
         // STATUS HISTORY
-        // ==========================================
 
         ComplaintStatusHistory history =
                 new ComplaintStatusHistory();
@@ -920,10 +852,6 @@ public class ComplaintService {
                 history
         );
 
-
-        // ==========================================
-        // RETURN UPDATED COMPLAINT
-        // ==========================================
 
         return ComplaintMapper.toComplaintResponse(
                 complaint,
@@ -972,10 +900,6 @@ public class ComplaintService {
                     );
 
 
-                    // ==========================================
-                    // OLD STATUS
-                    // ==========================================
-
                     if (history.getOldStatus() != null) {
 
                         response.setOldStatus(
@@ -984,10 +908,6 @@ public class ComplaintService {
                         );
                     }
 
-
-                    // ==========================================
-                    // NEW STATUS
-                    // ==========================================
 
                     if (history.getNewStatus() != null) {
 
@@ -998,16 +918,13 @@ public class ComplaintService {
                     }
 
 
-                    // ==========================================
-                    // CHANGED BY
-                    // ==========================================
-
                     if (history.getChangedBy() != null) {
 
                         response.setChangedByUserId(
                                 history.getChangedBy()
                                         .getUserId()
                         );
+
 
                         String firstName =
                                 history.getChangedBy()
@@ -1017,10 +934,12 @@ public class ComplaintService {
                                 history.getChangedBy()
                                         .getLastName();
 
+
                         String fullName =
                                 firstName != null
                                         ? firstName
                                         : "";
+
 
                         if (lastName != null &&
                                 !lastName.isBlank()) {
@@ -1031,6 +950,7 @@ public class ComplaintService {
 
                             fullName += lastName;
                         }
+
 
                         response.setChangedByName(
                                 fullName

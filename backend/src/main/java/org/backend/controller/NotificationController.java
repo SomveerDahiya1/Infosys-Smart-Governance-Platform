@@ -21,6 +21,10 @@ public class NotificationController {
     }
 
 
+    // ==========================================
+    // GET ALL NOTIFICATIONS OF A USER
+    // ==========================================
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse<List<Notification>>>
     getUserNotifications(
@@ -41,6 +45,34 @@ public class NotificationController {
     }
 
 
+    // ==========================================
+    // GET UNREAD NOTIFICATIONS
+    // ==========================================
+
+    @GetMapping("/user/{userId}/unread")
+    public ResponseEntity<ApiResponse<List<Notification>>>
+    getUnreadNotifications(
+            @PathVariable Long userId
+    ) {
+
+        List<Notification> notifications =
+                notificationService.getUnreadNotifications(userId);
+
+        ApiResponse<List<Notification>> response =
+                new ApiResponse<>(
+                        true,
+                        "Unread notifications fetched successfully",
+                        notifications
+                );
+
+        return ResponseEntity.ok(response);
+    }
+
+
+    // ==========================================
+    // MARK AS READ
+    // ==========================================
+
     @PutMapping("/{notificationId}/read")
     public ResponseEntity<ApiResponse<Notification>>
     markAsRead(
@@ -59,6 +91,4 @@ public class NotificationController {
 
         return ResponseEntity.ok(response);
     }
-
-
 }

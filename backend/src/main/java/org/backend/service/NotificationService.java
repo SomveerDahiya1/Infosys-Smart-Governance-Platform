@@ -31,6 +31,7 @@ public class NotificationService {
         this.userRepository = userRepository;
     }
 
+
     // ==========================================
     // CREATE COMPLAINT NOTIFICATION
     // ==========================================
@@ -60,16 +61,12 @@ public class NotificationService {
         notification.setComplaint(complaint);
         notification.setTitle(title);
         notification.setMessage(message);
-
         notification.setIsRead(false);
-
-        // IMPORTANT
-        notification.setCreatedAt(
-                LocalDateTime.now()
-        );
+        notification.setCreatedAt(LocalDateTime.now());
 
         return notificationRepository.save(notification);
     }
+
 
     // ==========================================
     // GET USER NOTIFICATIONS
@@ -81,6 +78,7 @@ public class NotificationService {
     ) {
 
         if (!userRepository.existsById(userId)) {
+
             throw new ResourceNotFoundException(
                     "User not found"
             );
@@ -89,6 +87,7 @@ public class NotificationService {
         return notificationRepository
                 .findByUserUserIdOrderByCreatedAtDesc(userId);
     }
+
 
     // ==========================================
     // GET UNREAD NOTIFICATIONS
@@ -100,6 +99,7 @@ public class NotificationService {
     ) {
 
         if (!userRepository.existsById(userId)) {
+
             throw new ResourceNotFoundException(
                     "User not found"
             );
@@ -109,8 +109,9 @@ public class NotificationService {
                 .findByUserUserIdAndIsReadFalse(userId);
     }
 
+
     // ==========================================
-    // MARK AS READ
+    // MARK NOTIFICATION AS READ
     // ==========================================
 
     @Transactional
@@ -128,13 +129,8 @@ public class NotificationService {
                         );
 
         notification.setIsRead(true);
+        notification.setReadAt(LocalDateTime.now());
 
-        notification.setReadAt(
-                LocalDateTime.now()
-        );
-
-        return notificationRepository.save(
-                notification
-        );
+        return notificationRepository.save(notification);
     }
 }
