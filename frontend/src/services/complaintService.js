@@ -170,7 +170,6 @@ const complaintService = {
                 `/complaints/${complaintId}/assign/admin/${adminUserId}`,
                 assignmentData
             );
-
         return response.data;
     },
 

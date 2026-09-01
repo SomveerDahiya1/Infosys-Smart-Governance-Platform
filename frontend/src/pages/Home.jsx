@@ -41,12 +41,11 @@ export default function Home() {
 
     const handleLogin = async () => {
 
-        // Clear previous error
         setError("");
 
 
         // ==========================================
-        // BASIC VALIDATION
+        // VALIDATION
         // ==========================================
 
         if (!email.trim() || !password.trim()) {
@@ -78,35 +77,18 @@ export default function Home() {
                 );
 
 
-            console.log(
-                "Login response:",
-                response.data
-            );
-
-
-            /*
-             Backend response structure:
-
-             {
-                 success: true,
-                 message: "Login successful",
-                 data: {
-                     token: "...",
-                     userId: 1,
-                     firstName: "...",
-                     lastName: "...",
-                     email: "...",
-                     role: "ADMIN"
-                 }
-             }
-            */
-
             const authData =
                 response.data.data;
 
 
+            console.log(
+                "Login response:",
+                authData
+            );
+
+
             // ==========================================
-            // VALIDATE RESPONSE
+            // VALIDATE TOKEN
             // ==========================================
 
             if (
@@ -123,7 +105,18 @@ export default function Home() {
 
 
             // ==========================================
-            // SAVE JWT TOKEN
+            // CLEAR OLD AUTH DATA
+            // ==========================================
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            localStorage.removeItem("role");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("citizenId");
+
+
+            // ==========================================
+            // SAVE JWT
             // ==========================================
 
             localStorage.setItem(
@@ -133,7 +126,7 @@ export default function Home() {
 
 
             // ==========================================
-            // SAVE COMPLETE USER INFORMATION
+            // SAVE COMPLETE USER DATA
             // ==========================================
 
             localStorage.setItem(
@@ -144,22 +137,58 @@ export default function Home() {
 
             // ==========================================
             // SAVE USER ID
-            // IMPORTANT FOR ADMIN / OFFICER ACTIONS
             // ==========================================
 
-            localStorage.setItem(
-                "userId",
-                String(authData.userId)
-            );
+            if (authData.userId) {
+
+                localStorage.setItem(
+                    "userId",
+                    String(authData.userId)
+                );
+            }
+
+
+            // ==========================================
+            // SAVE ROLE
+            // ==========================================
+
+            if (authData.role) {
+
+                localStorage.setItem(
+                    "role",
+                    authData.role
+                );
+            }
+
+
+            // ==========================================
+            // SAVE CITIZEN ID
+            // VERY IMPORTANT
+            // ==========================================
+
+            if (authData.citizenId) {
+
+                localStorage.setItem(
+                    "citizenId",
+                    String(authData.citizenId)
+                );
+
+                console.log(
+                    "Citizen ID saved:",
+                    authData.citizenId
+                );
+            }
 
 
             console.log(
-                "JWT and user information saved successfully."
-            );
-
-            console.log(
-                "Logged in user ID:",
+                "User ID:",
                 authData.userId
+            );
+
+
+            console.log(
+                "Role:",
+                authData.role
             );
 
 
@@ -171,7 +200,9 @@ export default function Home() {
                 authData.role?.toUpperCase();
 
 
+            // ==========================================
             // ADMIN
+            // ==========================================
 
             if (
                 role === "ADMIN" ||
@@ -182,12 +213,15 @@ export default function Home() {
                     "/admin/dashboard"
                 );
 
+                return;
             }
 
 
+            // ==========================================
             // OFFICER
+            // ==========================================
 
-            else if (
+            if (
                 role === "OFFICER" ||
                 role === "ROLE_OFFICER"
             ) {
@@ -196,32 +230,46 @@ export default function Home() {
                     "/officer/dashboard"
                 );
 
+                return;
             }
 
 
+            // ==========================================
             // CITIZEN
+            // ==========================================
 
-            else if (
+            if (
                 role === "CITIZEN" ||
                 role === "ROLE_CITIZEN"
             ) {
+
+                // Make sure citizen profile exists
+
+                if (!authData.citizenId) {
+
+                    setError(
+                        "Citizen profile not found. Please contact administrator."
+                    );
+
+                    return;
+                }
+
 
                 navigate(
                     "/citizen/dashboard"
                 );
 
+                return;
             }
 
 
+            // ==========================================
             // UNKNOWN ROLE
+            // ==========================================
 
-            else {
-
-                setError(
-                    `Unknown user role: ${authData.role}`
-                );
-
-            }
+            setError(
+                `Unknown user role: ${authData.role}`
+            );
 
         } catch (error) {
 
@@ -238,33 +286,33 @@ export default function Home() {
                     "Invalid email or password."
                 );
 
-            } else if (error.request) {
+            }
+
+            else if (error.request) {
 
                 setError(
                     "Unable to connect to server. Please make sure Spring Boot is running."
                 );
 
-            } else {
+            }
+
+            else {
 
                 setError(
                     "Something went wrong. Please try again."
                 );
-
             }
 
         } finally {
 
             setLoading(false);
-
         }
-
     };
 
 
     return (
 
         <div className="home">
-
 
             {/* ==================================
                 NAVBAR
@@ -295,6 +343,7 @@ export default function Home() {
 
                 <button
                     className="dark-btn"
+                    type="button"
                 >
 
                     <FaMoon />
@@ -307,20 +356,15 @@ export default function Home() {
 
 
             {/* ==================================
-                HERO SECTION
+                HERO
             ================================== */}
 
             <section className="hero">
 
-
-                {/* LEFT SECTION */}
-
                 <div className="left">
 
                     <p className="tag">
-
                         SMART GOVERNANCE SYSTEM
-
                     </p>
 
 
@@ -375,27 +419,19 @@ export default function Home() {
 
                 <div className="login-card">
 
-
                     <p className="small-title">
-
                         LOGIN PORTAL
-
                     </p>
 
 
                     <h2>
-
                         {portal} Portal
-
                     </h2>
 
 
                     {/* PORTAL TABS */}
 
                     <div className="tabs">
-
-
-                        {/* CITIZEN */}
 
                         <button
 
@@ -407,10 +443,7 @@ export default function Home() {
 
                             onClick={() => {
 
-                                setPortal(
-                                    "Citizen"
-                                );
-
+                                setPortal("Citizen");
                                 setError("");
 
                             }}
@@ -425,8 +458,6 @@ export default function Home() {
                         </button>
 
 
-                        {/* ADMIN */}
-
                         <button
 
                             className={
@@ -437,10 +468,7 @@ export default function Home() {
 
                             onClick={() => {
 
-                                setPortal(
-                                    "Admin"
-                                );
-
+                                setPortal("Admin");
                                 setError("");
 
                             }}
@@ -455,8 +483,6 @@ export default function Home() {
                         </button>
 
 
-                        {/* OFFICER */}
-
                         <button
 
                             className={
@@ -467,10 +493,7 @@ export default function Home() {
 
                             onClick={() => {
 
-                                setPortal(
-                                    "Officer"
-                                );
-
+                                setPortal("Officer");
                                 setError("");
 
                             }}
@@ -487,14 +510,10 @@ export default function Home() {
                     </div>
 
 
-                    {/* ==================================
-                        EMAIL
-                    ================================== */}
+                    {/* EMAIL */}
 
                     <label>
-
                         Email
-
                     </label>
 
 
@@ -506,9 +525,7 @@ export default function Home() {
 
                             type="email"
 
-                            value={
-                                email
-                            }
+                            value={email}
 
                             onChange={(event) => {
 
@@ -524,23 +541,17 @@ export default function Home() {
                                 `Enter ${portal.toLowerCase()} email`
                             }
 
-                            disabled={
-                                loading
-                            }
+                            disabled={loading}
 
                         />
 
                     </div>
 
 
-                    {/* ==================================
-                        PASSWORD
-                    ================================== */}
+                    {/* PASSWORD */}
 
                     <label>
-
                         Password
-
                     </label>
 
 
@@ -552,9 +563,7 @@ export default function Home() {
 
                             type="password"
 
-                            value={
-                                password
-                            }
+                            value={password}
 
                             onChange={(event) => {
 
@@ -568,9 +577,7 @@ export default function Home() {
 
                             placeholder="Enter password"
 
-                            disabled={
-                                loading
-                            }
+                            disabled={loading}
 
                             onKeyDown={(event) => {
 
@@ -579,7 +586,6 @@ export default function Home() {
                                 ) {
 
                                     handleLogin();
-
                                 }
 
                             }}
@@ -589,22 +595,16 @@ export default function Home() {
                     </div>
 
 
-                    {/* ==================================
-                        ERROR MESSAGE
-                    ================================== */}
+                    {/* ERROR */}
 
                     {error && (
 
                         <p
                             className="login-error"
                             style={{
-
                                 color: "#dc2626",
-
                                 marginTop: "10px",
-
                                 fontSize: "14px",
-
                             }}
                         >
 
@@ -615,21 +615,15 @@ export default function Home() {
                     )}
 
 
-                    {/* ==================================
-                        LOGIN BUTTON
-                    ================================== */}
+                    {/* LOGIN BUTTON */}
 
                     <button
 
                         className="login-btn"
 
-                        onClick={
-                            handleLogin
-                        }
+                        onClick={handleLogin}
 
-                        disabled={
-                            loading
-                        }
+                        disabled={loading}
 
                         type="button"
                     >
@@ -642,37 +636,27 @@ export default function Home() {
                     </button>
 
 
-                    {/* ==================================
-                        BOTTOM LINKS
-                    ================================== */}
+                    {/* LINKS */}
 
                     <div className="bottom-links">
 
                         <a
-
                             href="#"
-
                             onClick={(event) =>
                                 event.preventDefault()
                             }
                         >
-
                             Create Account
-
                         </a>
 
 
                         <a
-
                             href="#"
-
                             onClick={(event) =>
                                 event.preventDefault()
                             }
                         >
-
                             Forgot Password?
-
                         </a>
 
                     </div>
@@ -682,7 +666,5 @@ export default function Home() {
             </section>
 
         </div>
-
     );
-
 }

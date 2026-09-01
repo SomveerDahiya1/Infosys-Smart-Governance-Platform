@@ -1,56 +1,31 @@
 // ==========================================
-// AUTH SERVICE
+// LOGOUT
 // ==========================================
 
-
-/**
- * Logout the currently logged-in user.
- *
- * Clears all authentication-related data
- * from localStorage and redirects to login page.
- */
 export const logout = () => {
 
-    // ------------------------------------------
-    // Remove JWT
-    // ------------------------------------------
+    // ==========================================
+    // REMOVE AUTHENTICATION DATA
+    // ==========================================
 
     localStorage.removeItem("token");
 
-
-    // ------------------------------------------
-    // Remove logged-in user information
-    // ------------------------------------------
-
     localStorage.removeItem("user");
-
-
-    // ------------------------------------------
-    // Remove role
-    // ------------------------------------------
 
     localStorage.removeItem("role");
 
-
-    // ------------------------------------------
-    // Remove user ID
-    // ------------------------------------------
-
     localStorage.removeItem("userId");
 
-
-    // ------------------------------------------
-    // Remove any other possible auth data
-    // ------------------------------------------
+    localStorage.removeItem("citizenId");
 
     localStorage.removeItem("email");
 
     localStorage.removeItem("auth");
 
 
-    // ------------------------------------------
-    // Redirect to login/home page
-    // ------------------------------------------
+    // ==========================================
+    // REDIRECT TO HOME
+    // ==========================================
 
     window.location.href = "/";
 };
@@ -78,9 +53,11 @@ export const getCurrentUser = () => {
     const user =
         localStorage.getItem("user");
 
+
     if (!user) {
         return null;
     }
+
 
     try {
 
@@ -95,6 +72,7 @@ export const getCurrentUser = () => {
 
         return null;
     }
+
 };
 
 
@@ -104,5 +82,31 @@ export const getCurrentUser = () => {
 
 export const getCurrentRole = () => {
 
-    return localStorage.getItem("role");
+    return localStorage.getItem(
+        "role"
+    );
+};
+
+
+// ==========================================
+// GET CURRENT USER ID
+// ==========================================
+
+export const getCurrentUserId = () => {
+
+    return localStorage.getItem(
+        "userId"
+    );
+};
+
+
+// ==========================================
+// GET CURRENT CITIZEN ID
+// ==========================================
+
+export const getCurrentCitizenId = () => {
+
+    return localStorage.getItem(
+        "citizenId"
+    );
 };
