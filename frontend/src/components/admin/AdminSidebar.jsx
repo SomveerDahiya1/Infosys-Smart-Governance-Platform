@@ -74,28 +74,6 @@ export default function AdminSidebar() {
                 </li>
 
 
-                {/* OFFICERS */}
-
-                <li
-                    className={
-                        location.pathname === "/admin/officers"
-                            ? "active"
-                            : ""
-                    }
-                >
-
-                    <Link to="/admin/officers">
-
-                        <FaUserShield />
-
-                        <span>
-                            Officers
-                        </span>
-
-                    </Link>
-
-                </li>
-
 
                 {/* COMPLAINTS */}
 

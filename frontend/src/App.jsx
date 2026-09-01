@@ -30,7 +30,6 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import Analytics from "./pages/admin/Analytics.jsx";
 import ManageComplaints from "./pages/admin/ManageComplaints.jsx";
 import Reports from "./pages/admin/Reports.jsx";
-import ManageOfficers from "./pages/admin/ManageOfficers.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
 import AdminProfile from "./pages/admin/AdminProfile.jsx";
 import AdminNotifications from "./pages/admin/AdminNotifications.jsx";
@@ -156,11 +155,6 @@ function App() {
                     <Route
                         path="dashboard"
                         element={<AdminDashboard />}
-                    />
-
-                    <Route
-                        path="officers"
-                        element={<ManageOfficers />}
                     />
 
                     <Route
