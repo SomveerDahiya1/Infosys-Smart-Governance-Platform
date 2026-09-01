@@ -686,10 +686,9 @@ public class ComplaintService {
         );
     }
 
-
-    // ==========================================
-    // ASSIGN COMPLAINT TO OFFICER
-    // ==========================================
+// ==========================================
+// ASSIGN COMPLAINT TO OFFICER
+// ==========================================
 
     @Transactional
     public ComplaintResponse assignComplaint(
@@ -697,6 +696,10 @@ public class ComplaintService {
             Long adminUserId,
             AssignComplaintRequest request
     ) {
+
+        // ==========================================
+        // FIND COMPLAINT
+        // ==========================================
 
         Complaint complaint =
                 complaintRepository
@@ -707,6 +710,10 @@ public class ComplaintService {
                                 )
                         );
 
+
+        // ==========================================
+        // FIND OFFICER
+        // ==========================================
 
         Officer officer =
                 officerRepository
@@ -720,6 +727,10 @@ public class ComplaintService {
                         );
 
 
+        // ==========================================
+        // FIND ADMIN
+        // ==========================================
+
         User assignedBy =
                 userRepository
                         .findById(
@@ -732,7 +743,9 @@ public class ComplaintService {
                         );
 
 
+        // ==========================================
         // CLOSE PREVIOUS ASSIGNMENT
+        // ==========================================
 
         ComplaintAssignment currentAssignment =
                 assignmentRepository
@@ -756,7 +769,9 @@ public class ComplaintService {
         }
 
 
+        // ==========================================
         // CREATE NEW ASSIGNMENT
+        // ==========================================
 
         ComplaintAssignment assignment =
                 new ComplaintAssignment();
@@ -791,7 +806,9 @@ public class ComplaintService {
                 );
 
 
+        // ==========================================
         // CHANGE STATUS TO IN_PROGRESS
+        // ==========================================
 
         ComplaintStatus assignedStatus =
                 statusRepository
@@ -819,7 +836,9 @@ public class ComplaintService {
                 );
 
 
+        // ==========================================
         // STATUS HISTORY
+        // ==========================================
 
         ComplaintStatusHistory history =
                 new ComplaintStatusHistory();
@@ -852,6 +871,48 @@ public class ComplaintService {
                 history
         );
 
+
+        // ==========================================
+        // ADMIN NOTIFICATION - COMPLAINT ASSIGNED
+        // ==========================================
+
+        String firstName =
+                officer.getUser().getFirstName();
+
+        String lastName =
+                officer.getUser().getLastName();
+
+        String officerName =
+                (firstName != null ? firstName : "") +
+                        (lastName != null && !lastName.isBlank()
+                                ? " " + lastName
+                                : "");
+
+
+        String title =
+                "Complaint Assigned";
+
+
+        String message =
+                "You assigned Complaint #" +
+                        complaint.getComplaintId() +
+                        " to Officer " +
+                        officerName.trim() +
+                        ".";
+
+
+        notificationService
+                .createComplaintNotification(
+                        assignedBy,
+                        complaint,
+                        title,
+                        message
+                );
+
+
+        // ==========================================
+        // RETURN UPDATED COMPLAINT
+        // ==========================================
 
         return ComplaintMapper.toComplaintResponse(
                 complaint,
